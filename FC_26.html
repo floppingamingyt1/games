@@ -2116,7 +2116,11 @@ vIndirectBack = vIndirectFront;
       // can never cut through the view (see shellCull).
       const SHELL = { z: { "-1": [], "1": [] }, x: { "-1": [], "1": [] } };
       const CROWD = { uT: { value: 0 }, uCh: { value: 0 }, ch: 0, people: [], at: null };
+      // The original stadium lives in its own group so the second stadium (see buildStadium2) can be swapped in by the Stadium setting.
+      const STAD1 = new THREE.Group();
+      scene.add(STAD1);
       (function buildStadium() {
+        const scene = STAD1;
         const concrete = mat(0x2b3242), concrete2 = mat(0x252c3b), dark = mat(0x121827),
           seatMats = [new THREE.MeshLambertMaterial({ color: 0x23418a }), new THREE.MeshLambertMaterial({ color: 0x1b3270 })],
           led = new THREE.MeshBasicMaterial({ color: 0x00d7ff }),
@@ -2208,6 +2212,7 @@ vIndirectBack = vIndirectFront;
         }
 
         // ---- The crowd: four instanced meshes (torso+legs, head+neck, arms) driven by a small vertex-shader animation ----
+        const buildCrowd = (spots, scene, out) => {
         const N = spots.length;
         const merge = (parts) => {
           const gs = parts.map((p) => (p.g.index ? p.g.toNonIndexed() : p.g));
@@ -2301,13 +2306,322 @@ vIndirectBack = vIndirectFront;
           k.mesh.instanceMatrix.needsUpdate = true;
           k.ph.needsUpdate = true;
         }
-        CROWD.people = spots;
-        CROWD.at = { torso, head, arms };
+        out.people = spots;
+        out.at = { torso, head, arms };
+        };
+        buildCrowd(spots, scene, CROWD);
+        CROWD.build = buildCrowd;
       })();
+      // ---------------------------------------------------------------------------------
+      // Stadium 2: a tight, continuous two-tier rectangular bowl with rounded corners (Brisbane rectangular-stadium style).
+      // Lower bowl, concourse, a band of corporate suites, a steeper upper deck, and a partly open cantilever roof with exposed
+      // steel trusses, a bright raised lip and floodlight banks. Red / maroon seating, concrete and steel. No real signage.
+      // It is built the first time the Stadium setting is switched to it, and lives in its own group (STAD2).
+      // ---------------------------------------------------------------------------------
+      const STAD2 = new THREE.Group();
+      STAD2.visible = false;
+      scene.add(STAD2);
+      const CROWD2 = { people: [], at: null };
+      const SHELL2 = { z: { "-1": [], "1": [] }, x: { "-1": [], "1": [] } };
+      const ST2 = { A: 58, B: 38.2, R: 14, built: false, lowRows: 18, lowRun: 0.8, lowRise: 0.6, lowY0: 1.1, conc: 5, box: 3.4, boxH: 4.2, upRows: 17, upRun: 0.78, upRise: 0.72, upY0: 16 };
+      ST2.dLow = ST2.lowRows * ST2.lowRun;
+      ST2.yLow = ST2.lowY0 + (ST2.lowRows - 1) * ST2.lowRise;
+      ST2.dFac = ST2.dLow + ST2.conc;
+      ST2.dUp = ST2.dFac + ST2.box;
+      ST2.ySlab = ST2.yLow + ST2.boxH;
+      ST2.dBack = ST2.dUp + ST2.upRows * ST2.upRun;
+      ST2.yTopUp = ST2.upY0 + (ST2.upRows - 1) * ST2.upRise;
+      ST2.dLip = ST2.dUp + 2;
+      ST2.yLip = ST2.yTopUp + 6;
+      ST2.yRear = ST2.yLip + 5;
+      // Signed distance outside the inner rounded rectangle (the bowl's front edge): > 0 is over the stands
+      function st2Sdf(x, z) {
+        const qx = Math.abs(x) - (ST2.A - ST2.R), qz = Math.abs(z) - (ST2.B - ST2.R);
+        return Math.hypot(Math.max(qx, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qz), 0) - ST2.R;
+      }
+      // Height of the stand surface at a distance d from the front edge (piecewise linear, used to keep cameras above the crowd)
+      function st2H(d) {
+        const T = ST2, P = [[0, 1.1], [T.dLow, T.yLow + 0.6], [T.dFac, T.ySlab], [T.dUp, T.ySlab + 0.2], [T.dBack, T.yTopUp + 0.7], [T.dBack + 3, T.yTopUp + 0.7]];
+        if (d <= 0) return 0;
+        for (let i = 1; i < P.length; i++) if (d <= P[i][0]) return P[i - 1][1] + ((d - P[i - 1][0]) / (P[i][0] - P[i - 1][0])) * (P[i][1] - P[i - 1][1]);
+        return P[P.length - 1][1];
+      }
+      // The outline offset d metres out from the front edge, as 8 segments (4 straights, 4 corner arcs). Each segment's fn(t) gives
+      // [x, z, outward nx, outward nz]. Every offset has the same topology, so rows can be stitched together.
+      function st2Path(d) {
+        const A = ST2.A, B = ST2.B, R = ST2.R, cx = A - R, cz = B - R, r = R + d, qa = (Math.PI / 2) * r;
+        const arc = (ox, oz, deg) => (t) => {
+          const a = ((deg + 90 * t) * Math.PI) / 180, nx = Math.cos(a), nz = Math.sin(a);
+          return [ox + r * nx, oz + r * nz, nx, nz];
+        };
+        return [
+          { len: 2 * cz, fn: (t) => [A + d, -cz + t * 2 * cz, 1, 0], k: Math.ceil((2 * cz) / 8) },
+          { len: qa, fn: arc(cx, cz, 0), k: 10 },
+          { len: 2 * cx, fn: (t) => [cx - t * 2 * cx, B + d, 0, 1], k: Math.ceil((2 * cx) / 8) },
+          { len: qa, fn: arc(-cx, cz, 90), k: 10 },
+          { len: 2 * cz, fn: (t) => [-A - d, cz - t * 2 * cz, -1, 0], k: Math.ceil((2 * cz) / 8) },
+          { len: qa, fn: arc(-cx, -cz, 180), k: 10 },
+          { len: 2 * cx, fn: (t) => [-cx + t * 2 * cx, -B - d, 0, -1], k: Math.ceil((2 * cx) / 8) },
+          { len: qa, fn: arc(cx, -cz, 270), k: 10 },
+        ];
+      }
+      function st2Ring(d) {
+        const pts = [];
+        for (const sg of st2Path(d)) for (let j = 0; j < sg.k; j++) pts.push(sg.fn(j / sg.k));
+        return pts;
+      }
+      function buildStadium2() {
+        if (ST2.built) return;
+        ST2.built = true;
+        const T = ST2;
+        const col = new THREE.Color();
+        const shade = (hex, k) => {
+          col.setHex(hex);
+          col.multiplyScalar(1 - k);
+          return col.getHex();
+        };
+        const mkB = () => ({ p: [], c: [] });
+        const pushQ = (B, a, b, c, d, hex) => {
+          col.setHex(hex);
+          for (const v of [a, b, c, a, c, d]) {
+            B.p.push(v[0], v[1], v[2]);
+            B.c.push(col.r, col.g, col.b);
+          }
+        };
+        const finB = (B, material) => {
+          const g = new THREE.BufferGeometry();
+          g.setAttribute("position", new THREE.Float32BufferAttribute(B.p, 3));
+          g.setAttribute("color", new THREE.Float32BufferAttribute(B.c, 3));
+          g.computeVertexNormals();
+          const m = new THREE.Mesh(g, material);
+          STAD2.add(m);
+          return m;
+        };
+        const vcMat = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide }),
+          vcBasic = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.DoubleSide });
+        const P3 = (rp, y) => [rp[0], y, rp[1]];
+        const lerp2 = (p, q, f) => [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f];
+        // Parts that must disappear when the camera is out behind them are split into four sectors (see shellCull2)
+        const secKey = (rp) => (Math.abs(rp[3]) >= Math.abs(rp[2]) ? "z" + (rp[3] < 0 ? "-1" : "1") : "x" + (rp[2] < 0 ? "-1" : "1"));
+        const mkS = () => ({ z1: mkB(), "z-1": mkB(), x1: mkB(), "x-1": mkB() });
+        const finS = (S4, material) => {
+          for (const k of Object.keys(S4)) {
+            if (!S4[k].p.length) continue;
+            const m = finB(S4[k], material);
+            SHELL2[k[0]][k.slice(1)].push(m);
+          }
+        };
+        const BOWL = mkB(), SUITE = mkB(), LIT = mkB(), LED = mkB(), SH = mkS(), SHB = mkS();
+
+        // Stepped terraces: riser + seat tread + walkway tread per row
+        const tier = (o) => {
+          const rg = [];
+          for (let r = 0; r <= o.rows; r++) rg.push(st2Ring(o.d0 + r * o.run));
+          const n = rg[0].length;
+          for (let r = 0; r < o.rows; r++) {
+            const top = o.y0 + r * o.rise, low = r === 0 ? o.base : o.y0 + (r - 1) * o.rise, a = rg[r], b = rg[r + 1];
+            for (let i = 0; i < n; i++) {
+              const j = (i + 1) % n, m0 = lerp2(a[i], b[i], 0.66), m1 = lerp2(a[j], b[j], 0.66);
+              pushQ(BOWL, P3(a[i], low), P3(a[j], low), P3(a[j], top), P3(a[i], top), o.riser);
+              pushQ(BOWL, P3(a[i], top), P3(a[j], top), P3(m1, top), P3(m0, top), o.seat(r, i));
+              pushQ(BOWL, P3(m0, top), P3(m1, top), P3(b[j], top), P3(b[i], top), o.walk);
+            }
+          }
+        };
+        const strip = (Bk, dA, dB, y, hex, shell) => {
+          const a = st2Ring(dA), b = st2Ring(dB), n = a.length;
+          for (let i = 0; i < n; i++) {
+            const j = (i + 1) % n, q = [P3(a[i], y), P3(a[j], y), P3(b[j], y), P3(b[i], y)];
+            if (shell) pushQ(Bk[secKey(a[i])], q[0], q[1], q[2], q[3], hex);
+            else pushQ(Bk, q[0], q[1], q[2], q[3], hex);
+          }
+        };
+        const wall = (Bk, d, y0, y1, hex, shell) => {
+          const a = st2Ring(d), n = a.length;
+          for (let i = 0; i < n; i++) {
+            const j = (i + 1) % n, q = [P3(a[i], y0), P3(a[j], y0), P3(a[j], y1), P3(a[i], y1)];
+            if (shell) pushQ(Bk[secKey(a[i])], q[0], q[1], q[2], q[3], hex);
+            else pushQ(Bk, q[0], q[1], q[2], q[3], hex);
+          }
+        };
+        const slope = (Bk, dA, yA, dB, yB, hex) => {
+          const a = st2Ring(dA), b = st2Ring(dB), n = a.length;
+          for (let i = 0; i < n; i++) {
+            const j = (i + 1) % n;
+            pushQ(Bk[secKey(a[i])], P3(a[i], yA), P3(a[j], yA), P3(b[j], yB), P3(b[i], yB), hex);
+          }
+        };
+
+        // Lower bowl: red seats with a maroon band, light concrete walkways
+        tier({
+          d0: 0, rows: T.lowRows, run: T.lowRun, rise: T.lowRise, y0: T.lowY0, base: 0, riser: 0x9ea3aa, walk: 0x8b9097,
+          seat: (r, i) => shade(r >= 7 && r <= 8 ? 0x6e1222 : 0xb3232f, ((i * 7 + r * 3) % 5) * 0.025),
+        });
+        // Concourse behind the lower bowl, then the corporate-suite band (concrete parapet, dark glass, some lit suites, slab on top)
+        strip(BOWL, T.dLow, T.dFac, T.yLow, 0x7c8087);
+        wall(BOWL, T.dFac, T.yLow, T.ySlab, 0x9ea3aa);
+        {
+          const g1 = st2Ring(T.dFac - 0.06), n = g1.length;
+          for (let i = 0; i < n; i++) {
+            const j = (i + 1) % n, p = lerp2(g1[i], g1[j], 0.05), q = lerp2(g1[i], g1[j], 0.95), y0 = T.yLow + 0.95, y1 = T.yLow + 3.4;
+            const lit = (i * 5 + 3) % 7 < 2;
+            pushQ(lit ? LIT : SUITE, P3(p, y0), P3(q, y0), P3(q, y1), P3(p, y1), lit ? 0xb99a5e : 0x182a3c);
+          }
+        }
+        wall(LED, T.dFac - 0.08, T.yLow + 0.55, T.yLow + 0.75, 0xffe2b0);
+        wall(LED, 0.02, 0.3, 0.62, 0xeef6ff);
+        strip(BOWL, T.dFac, T.dUp, T.ySlab, 0x82868c);
+        // Upper deck: steeper, maroon low rows fading to red
+        tier({
+          d0: T.dUp, rows: T.upRows, run: T.upRun, rise: T.upRise, y0: T.upY0, base: T.ySlab, riser: 0x8f949b, walk: 0x80858c,
+          seat: (r, i) => shade(r < 5 ? 0x7a1626 : 0xa81f2d, ((i * 5 + r * 2) % 5) * 0.025),
+        });
+        wall(LED, T.dUp - 0.02, T.ySlab + 0.15, T.ySlab + 0.4, 0xeef6ff);
+        // Rear cladding, roof, raised lip (parts in SH are hidden when the camera is out behind them)
+        wall(SH, T.dBack, 0, T.yTopUp + 1.2, 0x39404a, true);
+        wall(SH, T.dBack, T.yTopUp + 1.2, T.yRear, 0x4b535e, true);
+        wall(SH, T.dBack - 0.04, T.yTopUp + 3.3, T.yTopUp + 3.8, 0xcfd6dd, true);
+        slope(SH, T.dLip, T.yLip, T.dBack, T.yRear, 0xb9bfc7);
+        wall(SHB, T.dLip, T.yLip - 1.4, T.yLip + 0.55, 0xe6eaee, true);
+        finS(SH, vcMat);
+        finS(SHB, vcBasic);
+        finB(BOWL, vcMat);
+        finB(SUITE, vcMat);
+        finB(LIT, vcBasic);
+        finB(LED, vcBasic);
+
+        // Roof trusses (steel chords + diagonals) and the floodlight banks along the lip, as instanced boxes per sector
+        const beams = { z1: [], "z-1": [], x1: [], "x-1": [] }, banks = { z1: [], "z-1": [], x1: [], "x-1": [] };
+        const dm = new THREE.Object3D();
+        const beam = (list, a, b, th) => {
+          dm.position.set((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2);
+          dm.lookAt(b[0], b[1], b[2]);
+          dm.scale.set(th, th, Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]));
+          dm.updateMatrix();
+          list.push(dm.matrix.clone());
+        };
+        {
+          const sl = st2Path(T.dLip), sr = st2Path(T.dBack);
+          const roofY = (u) => T.yLip + (T.yRear - T.yLip) * u;
+          for (let k = 0; k < sl.length; k++) {
+            const cnt = Math.max(2, Math.round(sl[k].len / 6.5));
+            for (let j = 0; j < cnt; j++) {
+              const t = (j + 0.5) / cnt, a = sl[k].fn(t), b = sr[k].fn(t), key = secKey(a);
+              const top = (u) => [a[0] + (b[0] - a[0]) * u, roofY(u) - 0.25, a[1] + (b[1] - a[1]) * u];
+              const bot = (u) => { const q = top(u); q[1] -= 0.8 + 1.8 * u; return q; };
+              beam(beams[key], top(0), top(1), 0.34);
+              beam(beams[key], bot(0), bot(1), 0.3);
+              for (let s = 0; s < 5; s++) {
+                const u0 = s / 5, u1 = (s + 1) / 5;
+                if (s % 2 === 0) beam(beams[key], bot(u0), top(u1), 0.2);
+                else beam(beams[key], top(u0), bot(u1), 0.2);
+              }
+              beam(beams[key], top(0), bot(0), 0.2);
+            }
+          }
+          // floodlight banks on the lip: wide bright panels every few metres
+          const bank = (list, rp, w) => {
+            dm.position.set(rp[0] - rp[2] * 0.2, T.yLip - 0.55, rp[1] - rp[3] * 0.2);
+            dm.rotation.set(0, Math.atan2(-rp[2], -rp[3]) + Math.PI, 0);
+            dm.scale.set(w, 0.7, 0.2);
+            dm.updateMatrix();
+            list.push(dm.matrix.clone());
+          };
+          for (let k = 0; k < sl.length; k++) {
+            const cnt = Math.max(2, Math.round(sl[k].len / 11));
+            for (let j = 0; j < cnt; j++) {
+              const rp = sl[k].fn((j + 0.5) / cnt);
+              bank(banks[secKey(rp)], rp, Math.min(6.5, (sl[k].len / cnt) * 0.7));
+            }
+          }
+        }
+        const boxG = new THREE.BoxGeometry(1, 1, 1),
+          steel = new THREE.MeshLambertMaterial({ color: 0x8f98a3 }),
+          glow = new THREE.MeshBasicMaterial({ color: 0xfff7e0 });
+        for (const [lists, material] of [[beams, steel], [banks, glow]])
+          for (const key of Object.keys(lists)) {
+            const L = lists[key];
+            if (!L.length) continue;
+            const im = new THREE.InstancedMesh(boxG, material, L.length);
+            L.forEach((m, i) => im.setMatrixAt(i, m));
+            im.instanceMatrix.needsUpdate = true;
+            im.frustumCulled = false;
+            STAD2.add(im);
+            SHELL2[key[0]][key.slice(1)].push(im);
+          }
+        dm.rotation.set(0, 0, 0);
+        dm.scale.set(1, 1, 1);
+        // Floodlight glow on the pitch from the roof edge
+        for (const x of [-45, -15, 15, 45]) for (const z of [-1, 1]) {
+          const l = new THREE.PointLight(0xe7f4ff, 0.3, 90);
+          l.position.set(x, T.yLip - 1.5, z * (T.B + T.dLip - 3));
+          STAD2.add(l);
+        }
+        // A grassy hill with trees rising behind the east end
+        {
+          const hill = new THREE.Mesh(new THREE.SphereGeometry(1, 28, 12), mat(0x35653a));
+          hill.scale.set(80, 34, 100);
+          hill.position.set(195, -6, 0);
+          STAD2.add(hill);
+          let sd = 777;
+          const rn = () => (sd = (sd * 1664525 + 1013904223) >>> 0) / 4294967296, tp = [];
+          for (let i = 0; i < 160 && tp.length < 90; i++) {
+            const x = 125 + rn() * 130, z = (rn() - 0.5) * 190, e = 1 - ((x - 195) / 80) ** 2 - (z / 100) ** 2;
+            if (e <= 0.05) continue;
+            const y = -6 + 34 * Math.sqrt(e);
+            if (y > 0.5) tp.push([x, y - 0.4, z, 0.8 + rn() * 0.9]);
+          }
+          const tg = new THREE.ConeGeometry(2.2, 7, 6).translate(0, 3.5, 0);
+          const trees = new THREE.InstancedMesh(tg, mat(0x214a2b), tp.length);
+          tp.forEach((t, i) => {
+            dm.position.set(t[0], t[1], t[2]);
+            dm.scale.set(t[3], t[3], t[3]);
+            dm.updateMatrix();
+            trees.setMatrixAt(i, dm.matrix);
+          });
+          trees.instanceMatrix.needsUpdate = true;
+          STAD2.add(trees);
+          dm.scale.set(1, 1, 1);
+        }
+
+        // The crowd: same instanced people as the first stadium, seated on both tiers
+        let seed = 98765;
+        const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+        const SK = [0xe0b090, 0xc68642, 0x8d5524, 0xf1c27d, 0xffdbac, 0x6b4423, 0xd9a07a],
+          HR = [0x222222, 0x3b2314, 0x8a5a2b, 0xd9b45a, 0x111111, 0x5a3a22, 0x9a9a9a, 0x9a3b1d];
+        const spots = [];
+        const seat = (o) => {
+          for (let r = 0; r < o.rows; r++) {
+            const top = o.y0 + r * o.rise, segs = st2Path(o.d0 + r * o.run + o.run * 0.3);
+            let total = 0;
+            for (const sg of segs) total += sg.len;
+            const n = Math.floor(total / o.sp);
+            let acc = 0, k = 0;
+            for (let i = 0; i < n; i++) {
+              const s = (i + 0.5) * (total / n);
+              while (k < segs.length - 1 && s > acc + segs[k].len) acc += segs[k++].len;
+              if (rnd() < o.skip) continue;
+              const rp = segs[k].fn(Math.min(1, (s - acc) / segs[k].len));
+              spots.push({
+                x: rp[0], y: top + 0.12, z: rp[1],
+                yaw: Math.atan2(-rp[2], -rp[3]) + (rnd() - 0.5) * 0.6,
+                sc: 0.92 + rnd() * 0.2, hv: 0.95 + rnd() * 0.12,
+                r1: rnd(), r2: rnd(), r3: rnd(), r4: rnd(),
+                skin: SK[Math.floor(rnd() * SK.length)], hair: HR[Math.floor(rnd() * HR.length)], ph: rnd(),
+              });
+            }
+          }
+        };
+        seat({ d0: 0, rows: T.lowRows, run: T.lowRun, rise: T.lowRise, y0: T.lowY0, sp: 1.0, skip: 0.06 });
+        seat({ d0: T.dUp, rows: T.upRows, run: T.upRun, rise: T.upRise, y0: T.upY0, sp: 1.08, skip: 0.1 });
+        CROWD.build(spots, STAD2, CROWD2);
+      }
       // Shirts follow the two selected teams (their ends and sides lean towards their colours); skin and hair are fixed per fan.
       function recolorCrowd() {
-        const C = CROWD, A = C.at;
-        if (!A) return;
+        for (const C of [CROWD, typeof CROWD2 !== "undefined" ? CROWD2 : null]) if (C && C.at) recolorOne(C);
+      }
+      function recolorOne(C) {
+        const A = C.at;
         const h0 = TEAMS[sel[0]].home, h1 = TEAMS[sel[1]].home, N = C.people.length, col = new THREE.Color();
         const NEUT = [0x2e3a4d, 0x8a8f99, 0x1d1d1d, 0xa33a3a, 0x3b6e4a, 0xd8d2c0, 0x4a5a8a, 0xc7a33a],
           JEANS = [0x1f2a44, 0x2b2b30, 0x3a4a66, 0x4a4036, 0x1a1a1a];
@@ -7593,6 +7907,13 @@ vIndirectBack = vIndirectFront;
         // Over the stands the camera stays at least 2.6 above the crowd, following the slope of the terraces (a smooth
         // ramp, so it never pops). The roof, ribs and rear wall on a side are hidden while the camera is out there with
         // them (shellCull), so nothing can cut through the view or sit inside the lens.
+        if (S.stadium === 1) {
+          const d = st2Sdf(p[0], p[2]);
+          if (d <= 0.3) return p;
+          const h = st2H(d);
+          if (p[1] < h + 2.6) p[1] = h + 2.6;
+          return p;
+        }
         const ax = Math.abs(p[0]),
           az = Math.abs(p[2]);
         if (ax <= 56.3 && az <= 36.5) return p;
@@ -7602,7 +7923,29 @@ vIndirectBack = vIndirectFront;
         if (p[1] < S + 2.6) p[1] = S + 2.6;
         return p;
       }
+      // Second stadium: the roof, trusses, lip and rear cladding on a side are hidden while the camera is out over / behind that side
+      function shellCull2(c) {
+        const out = st2Sdf(c.x, c.z) > ST2.dLip - 2,
+          sz = Math.abs(c.z) - (ST2.B - ST2.R),
+          sx = Math.abs(c.x) - (ST2.A - ST2.R);
+        for (const s of [-1, 1]) {
+          const zv = !(out && sz > 0 && c.z * s > 0),
+            xv = !(out && sx > 0 && c.x * s > 0);
+          for (const m of SHELL2.z[s]) m.visible = zv;
+          for (const m of SHELL2.x[s]) m.visible = xv;
+        }
+      }
+      function applyStadium() {
+        const on = S.stadium === 1;
+        if (on && !ST2.built) {
+          buildStadium2();
+          recolorCrowd();
+        }
+        STAD1.visible = !on;
+        STAD2.visible = on;
+      }
       function shellCull(c) {
+        if (S.stadium === 1) return shellCull2(c);
         for (const s of [-1, 1]) {
           const zv = !(c.z * s > 43),
             xv = !(c.x * s > 56.5);
@@ -8804,7 +9147,7 @@ vIndirectBack = vIndirectFront;
       // ======================= KICK OFF MENUS =======================
       // Screens: teams (Classic Match select teams), pre (Match Preview) + hub tabs (tm, settings, ctrl, stats),
       // sides, kits. Everything is driven by koAct(action) so keyboard, mouse/touch and gamepad share one path.
-      const S = { adv: 0, h: 0, a: 1, user: "home", prevUser: "home", koSide: "home", koT: 0, diff: 3, len: 1, step: "me", weather: 0, tod: 3, pitch: 0, design: 0, linec: 0, ball: 0, gk: 5 },
+      const S = { adv: 0, h: 0, a: 1, user: "home", prevUser: "home", koSide: "home", koT: 0, diff: 3, len: 1, step: "me", weather: 0, tod: 3, pitch: 0, design: 0, linec: 0, ball: 0, gk: 5, stadium: 0 },
         RULES = { offside: true, fouls: true, gameMode: true, cards: true, injuries: true, handball: true, shootout: false, replays: true },
         DIFFS = [
           { n: "Beginner", m: 0.8 },
@@ -9178,13 +9521,14 @@ vIndirectBack = vIndirectFront;
           ${mid || `<div class="h2h"><h4>Overall H2H</h4><div><div class="lb" style="color:#2fd9c0">Wins</div>${hc(wh, "#2fd9c0")}</div><div><div class="lb" style="color:#9eabbd">Draws</div>${hc(dr, "#9eabbd")}</div><div><div class="lb" style="color:#9be34a">Wins</div>${hc(wa, "#9be34a")}</div></div>`}
           <div class="infobar"><span><b>Stadium:</b> Derby Day Arena</span><span><b>Length:</b> ${hlTxt(LENS[S.len])} Half</span><span><b>Difficulty:</b> ${d.n}</span><span><b>Conditions:</b> ${WEATHERS[S.weather].n} | ${TODS[S.tod].t}</span></div>`;
       };
+      const STADIA = ["Derby Day Arena", "Brisbane Bowl"];
       const onOff = (v) => (v ? "On" : "Off"),
         rkIds = () => (ROCKET.mode === "set" ? ["rkm", "rkp"] : ["rkm", "rka", "rkb"]),
         SETTABS = [
           ["Game Type Settings", "GAME OPTIONS", () => ["len", "gm", "lock", "pens", "rep", ...rkIds()]],
           ["CPU Sliders", "CPU OPTIONS", () => ["diff", "gk"]],
           ["Camera", "CAMERA OPTIONS", () => ["cam", "camh", "camz", "radar", "radaro"]],
-          ["Visual", "VISUAL OPTIONS", () => ["weather", "tod", "pitch", "design", "linec", "grass", "grasscol", "ball"]],
+          ["Visual", "VISUAL OPTIONS", () => ["weather", "tod", "pitch", "design", "linec", "grass", "grasscol", "ball", "stadium"]],
           ["Audio", "AUDIO OPTIONS", () => AUDIO_IDS],
           ["Rules", "RULES", () => ["off", "foul", "cards", "inj", "hand"]],
           ["Accessibility", "ACCESSIBILITY OPTIONS", () => ["ctl", "fps", "offflag"]],
@@ -9201,6 +9545,7 @@ vIndirectBack = vIndirectFront;
           grass: ["Grass Quality", GRASS_TIERS[GRASS_Q].n, "Detail of the 3D grass blades. Lower it if the game runs slowly."],
           grasscol: ["Grass Colour", GRASS_COL_NAMES[GRASS_COL], "Shade of the pitch grass. The higher the bar, the deeper the green.", "grasscol"],
           ball: ["Ball", BALLS[S.ball].n, "Ball design."],
+          stadium: ["Stadium", STADIA[S.stadium || 0], "Derby Day Arena, or the tight two-tier Brisbane Bowl with a cantilever roof."],
           lock: ["Lock-On Player", lockOn ? "Lock" : "Auto", "Keep control of the chosen player, or auto-switch."],
           off: ["Offside", onOff(RULES.offside), "Players in an offside position are penalised."],
           foul: ["Fouls", onOff(RULES.fouls), "Tackles and challenges can be called as fouls."],
@@ -9791,7 +10136,7 @@ vIndirectBack = vIndirectFront;
       // Game settings are remembered between visits (menu changes, in-match camera keys and lock-on all save)
       function saveSettings() {
         try {
-          localStorage.setItem("dd3d-settings", JSON.stringify({ diff: S.diff, len: S.len, weather: S.weather, tod: S.tod, pitch: S.pitch, design: S.design, linec: S.linec, grass: GRASS_Q, grasscol: GRASS_COL, ball: S.ball, gk: S.gk, rules: RULES, rocket: ROCKET, cam: camMode, camH, camZ, lock: lockOn, audio: AUD, musAuto: MUS.auto, musAlways: MUS.always }));
+          localStorage.setItem("dd3d-settings", JSON.stringify({ diff: S.diff, len: S.len, weather: S.weather, tod: S.tod, pitch: S.pitch, design: S.design, linec: S.linec, grass: GRASS_Q, grasscol: GRASS_COL, ball: S.ball, stadium: S.stadium, gk: S.gk, rules: RULES, rocket: ROCKET, cam: camMode, camH, camZ, lock: lockOn, audio: AUD, musAuto: MUS.auto, musAlways: MUS.always }));
         } catch (e) {}
       }
       function loadSettings() {
@@ -9807,6 +10152,8 @@ vIndirectBack = vIndirectFront;
         S.design = idx(o.design, DESIGNS.length, S.design || 0);
         S.linec = idx(o.linec, LINECOLS.length, S.linec || 0);
         S.ball = idx(o.ball, BALLS.length, S.ball);
+        S.stadium = idx(o.stadium, STADIA.length, S.stadium || 0);
+        applyStadium();
         GRASS_Q = idx(o.grass, GRASS_TIERS.length, GRASS_Q);
         GRASS_COL = idx(o.grasscol, GRASS_SCALE.length, GRASS_COL);
         if (Number.isInteger(o.gk) && o.gk >= 0 && o.gk <= 10) S.gk = o.gk;
@@ -9864,6 +10211,9 @@ vIndirectBack = vIndirectFront;
         } else if (id === "ball") {
           S.ball = (S.ball + d + BALLS.length) % BALLS.length;
           setBallStyle(S.ball);
+        } else if (id === "stadium") {
+          S.stadium = ((S.stadium || 0) + d + STADIA.length) % STADIA.length;
+          applyStadium();
         } else if (id === "gm") RULES.gameMode = !RULES.gameMode;
         else if (id === "off") RULES.offside = !RULES.offside;
         else if (id === "foul") RULES.fouls = !RULES.fouls;
