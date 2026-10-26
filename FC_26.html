@@ -1204,6 +1204,54 @@
     #fps{position:fixed;top:calc(6px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:9000;display:none;padding:3px 9px;border-radius:6px;background:rgba(8,14,30,.72);color:#8dff9a;font:700 12px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.5px;pointer-events:none}
     #fps.on{display:block}
     </style>
+    <style id="onl-css">
+    .onl{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:64px 24px 84px;box-sizing:border-box;overflow:auto}
+    .onl>*{margin-top:auto;margin-bottom:auto}
+    .onl-card{width:min(92vw,520px);display:flex;flex-direction:column;gap:12px;padding:30px 30px 26px;border-radius:22px;background:rgba(10,16,32,.86);border:1px solid #ffffff26;box-shadow:0 20px 60px #000a;text-align:center}
+    .onl-card.wide{width:min(94vw,680px)}
+    .onl-card h2{margin:0;font-size:30px;letter-spacing:3px;font-weight:900}
+    .onl-card p{margin:0 0 6px;font-size:14px;line-height:1.5;color:#c4cfdf}
+    .onl .pb.nf,.onl .pb:hover{background:linear-gradient(90deg,#5238e0,#8d48f4);border:2px solid #8fb4ff;color:#fff;outline:0!important;box-shadow:0 0 24px #6a4cf066!important;cursor:pointer}
+    .onl .pb.dis{opacity:.45}
+    .onl .pb .bt{display:none}body.pad .onl .pb .bt{display:inline-flex}
+    .onl-in{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:10px 16px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid #ffffff2e;text-align:left;cursor:text}
+    .onl-in span{font-size:11px;font-weight:800;letter-spacing:2px;color:#8fb4ff}
+    .onl-in input{width:100%;box-sizing:border-box;background:transparent;border:0;outline:0;color:#fff;font-size:22px;font-weight:800;font-family:inherit}
+    .onl-in.nf{background:rgba(20,32,56,.95)}
+    .onl-msg{min-height:20px;font-size:14px;font-weight:700;color:#ff8a80}.onl-msg.ok{color:#8fe3c0}
+    .onl-lobby{align-items:flex-start;gap:28px;justify-content:center}
+    .onl-left{width:min(46vw,470px);display:flex;flex-direction:column;gap:14px}
+    .onl-right{width:min(46vw,470px);max-height:calc(100% - 10px);overflow:auto}
+    .onl-right h4{margin:0 0 6px;font-size:13px;letter-spacing:2px;color:#8fb4ff}
+    .onl-set .row{padding:8px 14px!important;font-size:14px!important}
+    .onl-set .rv em{min-width:110px!important;font-size:13px!important}
+    .onl-ro .rv em{color:#e4ebf4;text-transform:uppercase}
+    .onl-code{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:16px;background:rgba(10,16,32,.86);border:1px solid #ffffff26}
+    .onl-code small{font-size:11px;letter-spacing:2px;font-weight:800;color:#8fb4ff}
+    .onl-code b{font-size:34px;letter-spacing:8px;font-weight:900;color:#ffd84a;flex:1;text-align:center}
+    .onl-cp{padding:8px 16px;border-radius:20px;background:#ffffff1c;font-weight:800;font-size:13px;cursor:pointer}
+    .onl-cp.nf{background:linear-gradient(90deg,#5238e0,#8d48f4)}
+    .onl-pcs{display:flex;align-items:stretch;gap:10px}
+    .onl-pc{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 10px;border-radius:18px;background:rgba(10,16,32,.86);border:1px solid #ffffff26;min-width:0}
+    .onl-pc.wait{opacity:.6}
+    .onl-role{font-size:11px;letter-spacing:2px;font-weight:800;color:#2fd9c0}.onl-pc.a .onl-role{color:#9be34a}
+    .onl-nm{font-size:18px;font-weight:900;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.onl-nm.wait{font-size:13px;font-weight:700;color:#9eabbd}
+    .onl-tn{font-size:13px;font-weight:700;color:#c4cfdf}
+    .onl-tsel{margin:0!important;padding:6px 8px!important;width:100%;box-sizing:border-box;justify-content:center}
+    .onl-tsel .rv em{min-width:0!important;font-size:13px}
+    .onl-vs{align-self:center;font-weight:900;font-size:18px;color:#9eabbd}
+    .onl-btns{display:flex;flex-direction:column;gap:10px}
+    .onl-wait{padding:12px;text-align:center;font-weight:700;color:#c4cfdf}
+    .onl-win{font-size:38px;font-weight:900;letter-spacing:3px;color:#ffd84a}
+    .onl-sc{display:flex;align-items:center;justify-content:center;gap:22px;font-size:20px;font-weight:900}
+    .onl-sc b{font-size:46px}.onl-sc small{display:block;font-size:12px;font-weight:700;color:#9eabbd}
+    .onl-scorers{min-height:20px;font-size:13px;line-height:1.7;color:#c4cfdf}
+    #onl-pz{display:none;position:fixed;inset:0;z-index:60;align-items:center;justify-content:center;background:rgba(5,8,16,.55)}
+    .onl-pzbox{display:flex;flex-direction:column;gap:6px;align-items:center;padding:24px 34px;border-radius:20px;background:rgba(10,16,32,.95);border:1px solid #ffffff2e}
+    .onl-pzbox h3{margin:0;letter-spacing:3px}.onl-pzbox p{margin:0 0 6px;font-size:13px;color:#c4cfdf}
+    .onl-pzbox button{font-size:16px;padding:10px 34px;width:100%}.onl-pzbox .red{background:#e0453a;color:#fff}
+    @media (max-width:820px){.onl-lobby{flex-direction:column;align-items:center}.onl-left,.onl-right{width:min(94vw,520px)}}
+    </style>
   </head>
   <body class="booting">
     <div id="boot" class="pre"><img alt="" draggable="false" src="images/splashscreen/splashscreen.jpg"><div class="bar"><i></i></div><button class="start" type="button" tabindex="-1"><i class="bx"></i>START</button></div>
@@ -1368,6 +1416,32 @@
         GW = 3.66,
         GH = 2.44,
         clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+      // ======== ONLINE 1v1: seat engine ========
+      // The engine was written for one human on team 0. Online, the party owner's machine runs the whole match and a second
+      // human drives team 1 through a "seat": a swappable copy of every piece of per-human control state.
+      const ONL = { on: false, role: "", seat1: false, rk: false, mv1: [0, 0] };
+      let SEAT_T = 0, SEAT_I = 0;
+      const SEAT1 = { ctrl: null, swT: 0, lockOn: true, T: 1, I: 1, chg: { k: null, t: 0, mode: null, ct: 0 }, act: { tackle: 0, slide: 0, sp: null, hit: false, pend: null }, keys: {} };
+      function seatX() {
+        const z = SEAT1;
+        let t = ctrl; ctrl = z.ctrl; z.ctrl = t;
+        t = swT; swT = z.swT; z.swT = t;
+        t = lockOn; lockOn = z.lockOn; z.lockOn = t;
+        for (const k of ["k", "t", "mode", "ct"]) { t = chg[k]; chg[k] = z.chg[k]; z.chg[k] = t; }
+        for (const k of ["tackle", "slide", "sp", "hit", "pend"]) { t = act[k]; act[k] = z.act[k]; z.act[k] = t; }
+        for (const k of new Set([...Object.keys(keys), ...Object.keys(z.keys)])) { t = keys[k]; keys[k] = z.keys[k]; z.keys[k] = t; }
+        t = SEAT_T; SEAT_T = z.T; z.T = t;
+        t = SEAT_I; SEAT_I = z.I; z.I = t;
+      }
+      function eachSeat(fn) {
+        fn();
+        if (ONL.seat1) { seatX(); try { fn(); } finally { seatX(); } }
+      }
+      const ctrlS = (i) => (SEAT_I === i ? ctrl : SEAT1.ctrl),
+        actS = (i) => (SEAT_I === i ? act : SEAT1.act),
+        keyT = (t, c) => (t === 0 ? (SEAT_I === 0 ? keys[c] : SEAT1.keys[c]) : t === 1 && ONL.seat1 ? (SEAT_I === 1 ? keys[c] : SEAT1.keys[c]) : 0);
+
       // Boot lock: swallow input while the splash screen is up
       var booting = true;
       for (const ev of ["keydown", "keyup", "pointerdown", "mousedown"])
@@ -2915,8 +2989,9 @@ vIndirectBack = vIndirectFront;
           hd = Math.atan2(p.d.x, p.d.z),
           idt = Math.max(dt, 1e-3),
           drib = o === p && !ball.setp,
-          slide = p === ctrl && act.slide > 0,
-          tackle = p === ctrl && act.tackle > 0 && !slide,
+          sI = p === ctrlS(0) ? 0 : ONL.seat1 && p === ctrlS(1) ? 1 : -1,
+          slide = sI >= 0 && actS(sI).slide > 0,
+          tackle = sI >= 0 && actS(sI).tackle > 0 && !slide,
           cel = celeb > 0 && act.ck === "goal";
         p.turn =
           (p.turn || 0) +
@@ -3826,7 +3901,7 @@ vIndirectBack = vIndirectFront;
       // player running in from behind. Lower score is better; `cur` (the player we already control) gets a small
       // stickiness bonus so automatic switching does not flicker.
       function bestDef(r, ex, cur) {
-        const gx = -sg(0) * W;
+        const gx = -sg(SEAT_T) * W;
         let gxv = gx - r.pos.x,
           gzv = -r.pos.z;
         const gl = Math.hypot(gxv, gzv) || 1;
@@ -3848,7 +3923,7 @@ vIndirectBack = vIndirectFront;
         let b = null,
           bs = 1e9;
         for (const q of P) {
-          if (q.team !== 0 || q.gk || q === ex) continue;
+          if (q.team !== SEAT_T || q.gk || q === ex) continue;
           const rx = q.pos.x - r.pos.x,
             rz = q.pos.z - r.pos.z,
             along = rx * hx + rz * hz;
@@ -3866,17 +3941,17 @@ vIndirectBack = vIndirectFront;
       // Switch player: the best-placed defender when the opposition has the ball, otherwise whoever reaches the loose ball first
       function bestSwitch(ex, cur) {
         const o = ball.owner;
-        if (o && o.team !== 0) return bestDef(o, ex, cur) || nearest(0, true, ex);
-        if (o) return nearest(0, true, ex);
+        if (o && o.team !== SEAT_T) return bestDef(o, ex, cur) || nearest(SEAT_T, true, ex);
+        if (o) return nearest(SEAT_T, true, ex);
         const l = lp(),
           gkOk =
-            Math.abs(ball.p.x + sg(0) * W) < 16.5 &&
+            Math.abs(ball.p.x + sg(SEAT_T) * W) < 16.5 &&
             Math.abs(ball.p.z) < 20.16 &&
             Math.hypot(ball.v.x, ball.v.z) < 8;
         let b = null,
           bs = 1e9;
         for (const q of P) {
-          if (q.team !== 0 || q === ex || (q.gk && !gkOk)) continue;
+          if (q.team !== SEAT_T || q === ex || (q.gk && !gkOk)) continue;
           let sc = Math.hypot(q.pos.x - l[0], q.pos.z - l[1]) + (q.stun > 0 ? 6 : 0);
           if (q === cur) sc -= 2;
           if (sc < bs) {
@@ -3884,7 +3959,7 @@ vIndirectBack = vIndirectFront;
             b = q;
           }
         }
-        return b || nearest(0, true, ex);
+        return b || nearest(SEAT_T, true, ex);
       }
       // Closest outfield teammate at least 4m away: the kick-off pass always goes to one of these
       function nearMate(p) {
@@ -3927,7 +4002,7 @@ vIndirectBack = vIndirectFront;
         k.holdT = -0.8;
         freeze = 1;
         celeb = 0;
-        ctrl = t === 0 ? k : nearest(0, true);
+        eachSeat(() => { ctrl = t === SEAT_T ? k : nearest(SEAT_T, true); });
         say("");
         if (phase === "play") { if (LDCOVER) LDAFTER.push(() => { if (phase === "play") sfxKickoff(); }); else sfxKickoff(); }
       }
@@ -4109,7 +4184,7 @@ vIndirectBack = vIndirectFront;
         document.querySelectorAll("#pb .sg u").forEach((u, i) => (u.style.width = clamp(chg.t * 4 - i, 0, 1) * 100 + "%"));
         {
           // Two small player cards: team 0 (the side you control) and team 1. Each shows its active player; home sits left, away right.
-          const act = (t) => (t === 0 && ctrl && !SPEC() ? ctrl : ball.owner && ball.owner.team === t ? ball.owner : nearest(t, false)),
+          const act = (t) => (t === 0 && ctrl && !SPEC() ? ctrl : t === 1 && ONL.seat1 && SEAT1.ctrl ? SEAT1.ctrl : ball.owner && ball.owner.team === t ? ball.owner : nearest(t, false)),
             card = (x, t) => {
               const p = act(t), ti = sel[t], pw = $("pw" + x), left = ti === S.h ? true : ti === S.a ? false : t === 0;
               pw.classList.toggle("h", left);
@@ -4234,7 +4309,7 @@ vIndirectBack = vIndirectFront;
         ball.lastP = p;
         p.pcd = 0.5 + (isThrow ? 0 : p.kick.w);
         p.holdT = 0;
-        if (p === ctrl && p.gk) ctrl = null;
+        eachSeat(() => { if (p === ctrl && p.gk) ctrl = null; });
       }
       // Receiving a pass: pick a first-touch turn from the angle between where the player faces (towards the ball)
       // and where he wants to go (stick for the human, run target for the CPU).
@@ -4242,8 +4317,8 @@ vIndirectBack = vIndirectFront;
       //   ~110-158 deg  roll / spin turn the long way round (200-250 deg)     ~158+ deg  180 drag-back turn
       function startTurn(p) {
         let dx, dz;
-        if (p.team === 0) {
-          const [ix, iz] = inp();
+        if (p.team === 0 || (p.team === 1 && ONL.seat1)) {
+          const [ix, iz] = p.team === 1 ? ONL.mv1 : inp();
           dx = ix;
           dz = iz;
         } else if (p.tx !== undefined && Math.hypot(p.tx - p.pos.x, p.tz - p.pos.z) > 1.5) {
@@ -4316,7 +4391,8 @@ vIndirectBack = vIndirectFront;
         ball.v.set(0, 0, 0);
         // A keeper who gets the ball holds it: safe from tackles, can distribute
         if (p.gk && !own) Object.assign(ball, { setp: true, setk: "h", hand: false, hT: 0 });
-        if (p.team === 0) ctrl = p;
+        eachSeat(() => {
+        if (p.team === SEAT_T) ctrl = p;
         else if (prev !== p) {
           // Opposition player received the ball: switch to a well-placed defender
           const d = bestDef(p);
@@ -4325,6 +4401,7 @@ vIndirectBack = vIndirectFront;
             swT = 1.2;
           }
         }
+        });
       }
       function kickTo(p, m) {
         const tx = m.pos.x + m.vel.x * 0.6,
@@ -4345,16 +4422,26 @@ vIndirectBack = vIndirectFront;
         ball.rt = 2.5;
         ball.hm = false;
         // Switch the moment the ball leaves his foot: to a defender if United pass, to the receiver if it's ours
-        ball.pendSw = m.team === 1 ? bestDef(m) : m;
+        ball.pendSw = pendSwFor(m);
         if (!ball.strike) applySw();
       }
+      // Who each human gets switched to when a pass leaves the passer's foot: the receiver for his own team, the best defender for the other
+      function pendSwFor(m) {
+        const r = [null, null];
+        eachSeat(() => { r[SEAT_I] = m.team === SEAT_T ? m : bestDef(m); });
+        return r;
+      }
       function applySw() {
-        const m = ball.pendSw;
+        const pw = ball.pendSw;
         ball.pendSw = null;
-        if (m) {
-          ctrl = m;
-          swT = 1.2;
-        }
+        if (!pw) return;
+        eachSeat(() => {
+          const m = pw[SEAT_I];
+          if (m) {
+            ctrl = m;
+            swT = 1.2;
+          }
+        });
       }
       // Best power for a given distance to goal: too little falls short, too much sails over the bar
       const CP = [
@@ -4502,6 +4589,7 @@ vIndirectBack = vIndirectFront;
         return !!(ctrl && ball.owner === ctrl && (chg.k === "KeyF" || (act.pend && act.pend.p === ctrl)));
       }
       function inp() {
+        if (SEAT_I === 1) return ONL.mv1;
         const [rx, rz] = rawInp();
         if (!rx && !rz) return [0, 0];
         // Rotate the stick/keys so "up" is whichever way the camera looks along the pitch
@@ -4537,10 +4625,12 @@ vIndirectBack = vIndirectFront;
         ball.hm = false;
         r.pcd = 0.8;
         r.d.set(dx, 0, dz);
-        if (mate.team === 0) {
+        eachSeat(() => {
+        if (mate.team === SEAT_T) {
           ctrl = mate;
           swT = 1.2;
         }
+        });
       }
       function pickMate(p, kind) {
         const [ix, iz] = inp(),
@@ -4680,7 +4770,7 @@ vIndirectBack = vIndirectFront;
           ball.v.y = 2;
         }
         const keepRun = Math.hypot(p.vel.x, p.vel.z) > 1.5 && !ball.setp && !ball.hand ? { vx: p.vel.x, vz: p.vel.z, t: 2 } : null;
-        if (m) ball.pendSw = m; // switch when the ball actually leaves his foot (see ballStep)
+        if (m) ball.pendSw = pendSwFor(m); // switch when the ball actually leaves his foot (see ballStep)
         release(p);
         p.keepRun = keepRun; // passer carries on running instead of stopping
         if (kind === "through") msRe(mode === "throughLob" ? "lthru" : "thru");
@@ -4699,7 +4789,8 @@ vIndirectBack = vIndirectFront;
           : keys.Digit1 || keys.Numpad1
             ? "fin"
             : null;
-      addEventListener("keydown", (e) => {
+      const gameKeyDown = (e) => {
+        if (onlKeyIntercept(e, 1)) return;
         if (e.code === "Space" || e.code === "Quote" || e.code === "Semicolon") e.preventDefault();
         if (RP.on && !pauseOpen && !subsOpen()) {
           if (e.code === "Digit1" || e.code === "Numpad1" || e.code === "KeyE") keys[e.code] = 1;
@@ -4707,7 +4798,7 @@ vIndirectBack = vIndirectFront;
           if (!e.repeat && (["Space", "Enter", "NumpadEnter", "KeyH", "KeyX"].includes(e.code) || rpBoth)) rpEnd();
           if (e.code !== "Escape" && e.code !== "KeyP" && e.code !== "KeyU") return;
         }
-        if (menuActive()) {
+        if (menuActive() && !ONL.rk) {
           koKey(e);
           return;
         }
@@ -4730,9 +4821,9 @@ vIndirectBack = vIndirectFront;
           if(mod){const padR1=!!(pad&&pad.held&&pad.held[5]==="Digit1"),lob=!!keys.KeyE||!!(keys.Digit1&&!padR1),mode=lob?"throughLob":"throughDirectional";if(mode==="throughLob"){if(chg.k!=="KeyJ"){chg.k="KeyJ";chg.t=0;}chg.mode=mode;chg.ct=CT;return;}chg.k=null;chg.t=0;fire("KeyJ",1,mode);return;}
         }
         if((e.code==="Escape"||e.code==="KeyP")&&phase==="play"){openPause();return;}
-        if(e.code==="KeyU"&&phase==="play"){ensureTeams();openSubs(subState.activeTeam||0);return;}
+        if(e.code==="KeyU"&&phase==="play"&&!ONL.on){ensureTeams();openSubs(subState.activeTeam||0);return;}
         if(e.code==="KeyY"&&phase==="play"){toggleHints();return;}
-        if(e.code==="Equal"&&phase==="play"){
+        if(e.code==="Equal"&&phase==="play"&&!ONL.on){
           const now=performance.now();let taps=(window.__eqTaps||[]).filter(t=>now-t<2000);
           if(!taps.length)window.__eqZ=camZ;
           taps.push(now);window.__eqTaps=taps;
@@ -4808,8 +4899,10 @@ vIndirectBack = vIndirectFront;
           swT = 0;
         }
         camKey(e.code);
-      });
-      addEventListener("keyup", (e) => {
+      };
+      addEventListener("keydown", gameKeyDown);
+      const gameKeyUp = (e) => {
+        if (onlKeyIntercept(e, 0)) return;
         keys[e.code] = 0;
         if (chg.k === e.code) {
           const had = ctrl && ball.owner === ctrl;
@@ -4828,7 +4921,8 @@ vIndirectBack = vIndirectFront;
           chg.k = null;
           chg.t = 0;
         }
-      });
+      };
+      addEventListener("keyup", gameKeyUp);
       $("camb").onclick = () => camKey("KeyC");
       addEventListener("blur", () => {
         for (const k in keys) keys[k] = 0;
@@ -4969,7 +5063,7 @@ vIndirectBack = vIndirectFront;
           );
           const dfs = P.filter(
             (q) =>
-              q.team === t && !q.gk && !q.injured && q.role !== "F" && q !== ctrl && !chase.has(q) && q !== o && q.stun <= 0,
+              q.team === t && !q.gk && !q.injured && q.role !== "F" && q !== ctrl && q !== SEAT1.ctrl && !chase.has(q) && q !== o && q.stun <= 0,
           );
           const pairs = [];
           for (const d of dfs)
@@ -5097,17 +5191,19 @@ vIndirectBack = vIndirectFront;
         ball.hm = true;
         ball.lobPass = true;
         msRe("cross");
-        if (best.team === 1) {
+        eachSeat(() => {
+        if (best.team !== SEAT_T) {
           const d = bestDef(best);
           if (d) {
             ctrl = d;
             swT = 1.2;
           }
         } else ctrl = best;
+        });
         return true;
       }
       function aiOwner(p, dt, s) {
-        p.holdT += dt * (RULES.gameMode && (p.team === 1 || SPEC()) ? GM_AI_TEMPO : 1);
+        p.holdT += dt * (RULES.gameMode && (p.team === 1 || SPEC() || ONL.on) ? GM_AI_TEMPO : 1);
         p.sp = 7;
         p.tx = p.pos.x;
         p.tz = p.pos.z;
@@ -5246,7 +5342,7 @@ vIndirectBack = vIndirectFront;
             }
           }
           // Hold Through (△/Y) while your team has no possession: your keeper sprints out towards the ball
-          if (p.team === 0 && !SPEC() && keys.KeyJ && !(o && o.team === 0) && !ball.setp && !SO.on) {
+          if ((p.team === 0 || (p.team === 1 && ONL.seat1)) && !SPEC() && keyT(p.team, "KeyJ") && !(o && o.team === p.team) && !ball.setp && !SO.on) {
             p.tx = ball.p.x + ball.v.x * 0.35;
             p.tz = ball.p.z + ball.v.z * 0.35;
             p.sp = 9;
@@ -5462,7 +5558,7 @@ vIndirectBack = vIndirectFront;
         E.p = sc;
         E.sz = Math.sign(sc.pos.z) || (Math.random() < 0.5 ? -1 : 1);
         E.snap = false;
-        if (t === 0 && !SPEC()) {
+        if (t === 0 && !SPEC() && !ONL.on) {
           // Your goal: the scorer is yours to run anywhere for 10 s while the team-mates chase after him.
           // Press 1 / 2 / 3 to celebrate (corner camera, run-in, celebration); otherwise it goes to the replay.
           E.free = true;
@@ -5675,7 +5771,8 @@ vIndirectBack = vIndirectFront;
         Object.assign(ball, { setp: true, setk: ty, hand: ty === "t", offs: null });
         p.holdT = -0.7;
         freeze = 0.6;
-        if (t === 0) ctrl = p;
+        eachSeat(() => {
+        if (t === SEAT_T) ctrl = p;
         else {
           // Opposition restart (throw-in, corner, free kick...): switch to a well-placed defender
           const d = bestDef(p);
@@ -5684,6 +5781,7 @@ vIndirectBack = vIndirectFront;
             swT = 1.2;
           }
         }
+        });
         if (ty === "c") MS.corners[t]++;
         if (SAY[ty] && ty !== "p") say(SAY[ty], 1200);
         if (ty === "g") say("GOAL KICK", 1200);
@@ -5735,8 +5833,10 @@ vIndirectBack = vIndirectFront;
         if (ball.owner === q) ball.owner = null;
         if (ball.rcv === q) ball.rcv = null;
         if (ball.dummy === q) ball.dummy = null;
-        if (act.sp === q) act.sp = null;
-        if (ctrl === q) ctrl = nearest(0, true);
+        eachSeat(() => {
+          if (act.sp === q) act.sp = null;
+          if (ctrl === q) ctrl = nearest(SEAT_T, true);
+        });
       }
       function giveCard(q, kind) {
         if (!RULES.cards || q.gk || SO.on) return;
@@ -6678,12 +6778,12 @@ vIndirectBack = vIndirectFront;
         const b = ball, s = sg(p.team), gx = s * W, gdx = (gx - p.pos.x) * s, // distance to the goal he attacks (positive = goal ahead)
           hv = Math.hypot(b.v.x, b.v.z), pace = hv + Math.abs(b.v.y) * 0.3,
           gmK = RULES.gameMode ? GM_SHOT : 1,
-          human = p === ctrl,
+          human = p === ctrlS(0) || (ONL.seat1 && p === ctrlS(1)),
           own = p.pos.x * s < 0,
           near = gdx < 20 && Math.abs(p.pos.z) < 16,
           y0 = b.p.y;
         let ix = 0, iz = 0;
-        if (human) [ix, iz] = inp();
+        if (human) [ix, iz] = p.team === 1 && ONL.seat1 ? ONL.mv1 : SEAT_I === 0 ? inp() : [0, 0];
         const stick = !!(ix || iz), sl = Math.hypot(ix, iz) || 1,
           back = human && stick && (ix * s) / sl < -0.3;
         let shot = false, mate = null, vx, vy, vz;
@@ -6748,7 +6848,8 @@ vIndirectBack = vIndirectFront;
           b.rcv = mate;
           b.rt = 2.5;
           b.hm = true;
-          if (mate.team === 0) {
+          eachSeat(() => {
+          if (mate.team === SEAT_T) {
             ctrl = mate;
             swT = 1.2;
           } else {
@@ -6758,6 +6859,7 @@ vIndirectBack = vIndirectFront;
               swT = 1.2;
             }
           }
+          });
         }
         const hh = Math.hypot(vx, vz) || 1;
         p.d.set(vx / hh, 0, vz / hh);
@@ -6846,9 +6948,10 @@ vIndirectBack = vIndirectFront;
           if (!so && freeze <= 0 && celeb <= 0) {
             for (const q of P) {
               if (q.team === o.team || q.stun > 0 || q.tcd > 0) continue;
-              const isC = q === ctrl,
-                tk = isC && act.tackle > 0,
-                sl = isC && act.slide > 0;
+              const sI = q === ctrlS(0) ? 0 : ONL.seat1 && q === ctrlS(1) ? 1 : -1,
+                isC = sI >= 0,
+                tk = isC && actS(sI).tackle > 0,
+                sl = isC && actS(sI).slide > 0;
               const bump =
                 isC && !tk && !sl && q.vel.length() > 2.5 && q.pos.distanceTo(o.pos) < 1.2;
               if (isC && !tk && !sl && !bump) continue;
@@ -6880,7 +6983,8 @@ vIndirectBack = vIndirectFront;
                   sfxTackle(sl ? 2 : tk ? 1 : 0);
                   takeBall(q);
                   o.stun = 0.6;
-                  if (q === act.sp) act.hit = true;
+                  if (q === actS(0).sp) actS(0).hit = true;
+                  if (ONL.seat1 && q === actS(1).sp) actS(1).hit = true;
                   return;
                 }
               }
@@ -7023,14 +7127,16 @@ vIndirectBack = vIndirectFront;
       const CT = 0.6;
       const sprint = () => keys.ShiftLeft || keys.ShiftRight;
       function step(dt) {
-        swT -= dt;
-        act.tackle -= dt;
-        act.slide -= dt;
-        if (act.sp && act.slide <= 0) {
-          if (!act.hit) act.sp.stun = 0.7;
-          act.sp = null;
-        }
-        if (chg.k) chg.t = Math.min(1, chg.t + dt / (chg.ct || CT));
+        eachSeat(() => {
+          swT -= dt;
+          act.tackle -= dt;
+          act.slide -= dt;
+          if (act.sp && act.slide <= 0) {
+            if (!act.hit) act.sp.stun = 0.7;
+            act.sp = null;
+          }
+          if (chg.k) chg.t = Math.min(1, chg.t + dt / (chg.ct || CT));
+        });
         if (freeze > 0) freeze -= dt;
         if (celeb > 0) {
           celeb -= dt;
@@ -7046,19 +7152,20 @@ vIndirectBack = vIndirectFront;
         tickInjuries(dt);
         const live = freeze <= 0 && celeb <= 0,
           o = ball.owner;
-        if (o && o.team === 0) ctrl = o;
+        eachSeat(() => {
+        if (o && o.team === SEAT_T) ctrl = o;
         else if (!ctrl || (!lockOn && swT <= 0 && !(ball.strike && ball.strike.p === ctrl))) {
-          ctrl = bestSwitch(null, ctrl) || nearest(0, true);
+          ctrl = bestSwitch(null, ctrl) || nearest(SEAT_T, true);
           swT = 0.25;
         }
-        if (celFree()) ctrl = CEL.p; // after your goal you steer the scorer
+        if (celFree() && CEL.p && CEL.p.team === SEAT_T) ctrl = CEL.p; // after your goal you steer the scorer
         if (SPEC()) ctrl = null; // spectator: the CPU plays both teams
         // Beaten: the attacker has gone past the player we control, or the ball has gone past him. Hand over control
         // to the next best-placed player straight away (works with lock-on too).
-        if (live && !SO.on && ctrl && ctrl.team === 0 && swT <= 0 && !ball.setp && act.slide <= 0 && act.tackle <= 0 && !(ball.rcv === ctrl && ball.lastTeam === 0) && !(o && o.team === 0)) {
+        if (live && !SO.on && ctrl && ctrl.team === SEAT_T && swT <= 0 && !ball.setp && act.slide <= 0 && act.tackle <= 0 && !(ball.rcv === ctrl && ball.lastTeam === SEAT_T) && !(o && o.team === SEAT_T)) {
           let nxt = null;
-          if (o && o.team === 1) {
-            const gx = -sg(0) * W,
+          if (o && o.team !== SEAT_T) {
+            const gx = -sg(SEAT_T) * W,
               sp = Math.hypot(o.vel.x, o.vel.z);
             let hx = gx - o.pos.x,
               hz = -o.pos.z;
@@ -7099,13 +7206,14 @@ vIndirectBack = vIndirectFront;
           chg.t = 0;
         }
         // Our keeper can't hold the ball forever: auto-distribute after 8s
-        if (live && o && o.gk && o.team === 0 && ball.setp && ball.setk === "h") {
+        if (live && o && o.gk && o.team === SEAT_T && ball.setp && ball.setk === "h") {
           ball.hT += dt;
           if (ball.hT > 8 && !passAI(o, true)) {
-            ball.v.set(sg(0) * 20, 6, 0);
+            ball.v.set(sg(SEAT_T) * 20, 6, 0);
             release(o);
           }
         }
+        });
         if (live && !SO.on) {
           if (!(ball.setp && ball.setk === "k")) {
             time += dt;
@@ -7132,6 +7240,7 @@ vIndirectBack = vIndirectFront;
             else return endMatch();
           }
         }
+        eachSeat(() => {
         if (act.pend) {
           const q = act.pend;
           q.t -= dt;
@@ -7141,6 +7250,7 @@ vIndirectBack = vIndirectFront;
             if (live) fire("KeyF", q.c);
           }
         }
+        });
         calcShape();
         // A presser the carrier has gone past may give up, drop back, and someone else steps up
         if (o)
@@ -7156,23 +7266,27 @@ vIndirectBack = vIndirectFront;
         chase.clear();
         for (const t of [0, 1]) {
           if (o && o.team === t) continue;
-          const a = P.filter((p) => p.team === t && !p.gk && p !== ctrl && (p.giveT || 0) <= 0).sort(
+          const a = P.filter((p) => p.team === t && !p.gk && p !== ctrl && p !== SEAT1.ctrl && (p.giveT || 0) <= 0).sort(
             (x, y) => x.pos.distanceToSquared(ball.p) - y.pos.distanceToSquared(ball.p),
           );
           a.slice(0, o ? 2 : 1).forEach((p) => chase.add(p));
         }
         calcBox();
         // Hold R1 (1) without the ball: the next closest teammate sprints in to press the ball / carrier
-        if (live && phase === "play" && (keys.Digit1 || keys.Numpad1) && ctrl && !(o && o.team === 0)) {
+        eachSeat(() => {
+        if (live && phase === "play" && (keys.Digit1 || keys.Numpad1) && ctrl && !(o && o.team === SEAT_T)) {
           let pr = null, pd = 1e9;
           for (const q of P) {
-            if (q.team !== 0 || q.gk || q === ctrl || q.stun > 0) continue;
+            if (q.team !== SEAT_T || q.gk || q === ctrl || q.stun > 0) continue;
             const d = q.pos.distanceToSquared(ball.p);
             if (d < pd) { pd = d; pr = q; }
           }
           if (pr) { pr.giveT = 0; pr.press = 1; chase.add(pr); }
         }
+        });
         for (const p of P) {
+          const _sx = ONL.seat1 && SEAT_I === 0 && p === SEAT1.ctrl;
+          if (_sx) seatX();
           p.tcd -= dt;
           p.stun -= dt;
           p.pcd -= dt;
@@ -7250,7 +7364,8 @@ vIndirectBack = vIndirectFront;
               }
             } else {
               ai(p, o, dt);
-              if (p.team === 1 || SPEC()) p.sp *= DIFFS[S.diff].m * (RULES.gameMode ? GM_AI_SPEED : 1);
+              if (ONL.on) p.sp *= RULES.gameMode ? GM_AI_SPEED : 1;
+              else if (p.team === 1 || SPEC()) p.sp *= DIFFS[S.diff].m * (RULES.gameMode ? GM_AI_SPEED : 1);
               const dx = p.tx - p.pos.x,
                 dz = p.tz - p.pos.z,
                 dd = Math.hypot(dx, dz);
@@ -7391,6 +7506,7 @@ vIndirectBack = vIndirectFront;
             const tm = p.tm, u = clamp(tm.t / tm.dur, 0, 1), h = tm.h0 + tm.rot * (u * u * (3 - 2 * u));
             p.d.set(Math.sin(h), 0, Math.cos(h));
           }
+          if (_sx) seatX();
         }
         for (let i = 0; i < P.length; i++)
           for (let j = i + 1; j < P.length; j++) {
@@ -7435,6 +7551,7 @@ vIndirectBack = vIndirectFront;
           q.stam = clamp(q.stam + (spr ? -1 / 45 : 1 / 30) * dt, 0, 1);
         }
         upd();
+        if (ONL.on && ONL.role === "host") onlHostTick(dt);
       }
       const CAMS = ["TACTICAL","EA SPORTS GAMECAM","TELE BROADCAST","TELE","CO-OP","CLASSIC","DYNAMIC","END TO END","PRO","BROADCAST","LEGACY"],
         camFace = new V3(1, 0, 0),
@@ -8934,7 +9051,7 @@ vIndirectBack = vIndirectFront;
         </div>
         <div class="h-logo">FC26</div>
         <div class="h-user">${esc(HOME_NAME)}</div>
-        <nav class="h-side"><div class="h-item" data-f data-id="homeside" data-go="teams">Kick Off</div></nav>
+        <nav class="h-side"><div class="h-item" data-f data-id="homeside" data-go="teams">Kick Off</div><div class="h-item" data-f data-id="home1v1" data-go="online">1v1</div></nav>
         <div class="h-center">
           <div class="ko-logo h-ko">K<span>O</span></div>
           <h2>Dive straight into the action</h2>
@@ -9336,6 +9453,7 @@ vIndirectBack = vIndirectFront;
         homeBg(scr === "home");
         $("ko-title").textContent = ["teams", "sides", "kits"].includes(scr) ? "Classic Match" : scr === "ctrl" && ctrlDetail ? "Controller Settings" : scr === "padcal" ? "Settings" : "Kick Off";
         $("ko-sub").textContent = scr === "teams" ? "Select Teams" : scr === "sides" ? "Select Sides" : scr === "kits" ? "Select Kits" : "";
+        if (ONL_SCR.includes(scr)) { $("ko-title").textContent = "1v1 Online"; $("ko-sub").textContent = scr === "lobby" ? "Party Lobby" : scr === "onlres" ? "Result" : scr === "onjoin" ? "Join Party" : ""; }
         const tb = $("ko-tabs");
         tb.style.display = hub && !(scr === "settings" && setDetail) && !(scr === "ctrl" && ctrlDetail) ? "flex" : "none";
         tb.innerHTML = '<div class="th"><i>L1</i><i>R1</i></div>' + TABS.map(([id, l]) => `<div class="tab ${id === scr ? "on" : ""}" data-tab="${id}">${l}</div>`).join("");
@@ -9544,6 +9662,7 @@ vIndirectBack = vIndirectFront;
           <div class="cs-p"><h5>wireless controller 1</h5>${ctlSVG()}</div></div></section>`;
       }
       function openPause() {
+        if (ONL.on) return onlPauseToggle();
         pauseOpen = true;
         chg.k = null;
         chg.t = 0;
@@ -9715,6 +9834,7 @@ vIndirectBack = vIndirectFront;
         }
       }
       function adj(id, d) {
+        if (id === "lbteam") return onlTeamAdj(d);
         if (id === "side" && pauseOpen) { const O = ["home", "none", "away"]; pzSide = O[clamp(O.indexOf(pzSide) + d, 0, 2)]; sfxMenu("adjust"); return renderPause(); }
         if (!AUDIO_IDS.includes(id)) sfxMenu("adjust");
         if (id === "team0" || id === "team1") cycleTeam(+id.slice(4), d);
@@ -9798,7 +9918,8 @@ vIndirectBack = vIndirectFront;
         }
         saveSettings();
         ensureTeams();
-        render();
+        if (ONL.role === "host" && scr === "lobby" && !ONL.on) onlBroadcastLobby();
+        else render();
       }
       // ---- confirmation dialog (End Match / restart) ----
       let confirmFn = null, confirmPrev = "";
@@ -10038,6 +10159,7 @@ vIndirectBack = vIndirectFront;
         if (a === "start") closePause();
       }
       function screenAct(a) {
+        if (ONL_SCR.includes(scr)) return onlScreenAct(a);
         if (scr === "home") {
           const hcur = main.querySelector(".nf");
           const gear = main.querySelector('[data-id="homeset"]');
@@ -10053,7 +10175,8 @@ vIndirectBack = vIndirectFront;
           if (a === "accept" && hcur && hcur.dataset.id === "homeset") return activate(hcur);
           if (a === "accept") {
             sfxMenu("select");
-            nav(() => show("teams"));
+            if (hcur && hcur.dataset.id === "home1v1") nav(() => show("online"));
+            else nav(() => show("teams"));
           }
           return;
         }
@@ -10276,6 +10399,642 @@ vIndirectBack = vIndirectFront;
       addEventListener("gamepadconnected", () => {
         if (phase !== "play" && scr === "ctrl") render();
       });
+      // ======================================================================================================
+      // ONLINE 1v1  (peer-to-peer over WebRTC with PeerJS; no server of our own, so it works from GitHub Pages)
+      //   party owner = host : runs the whole match, drives team 0 itself and team 1 through the guest's inputs
+      //   joiner      = guest: sends its controls, renders the host's match (mirrored so it always attacks left to right)
+      // ======================================================================================================
+      const ONL_SCR = ["online", "onjoin", "lobby", "onlres"];
+      const ONLN = { peer: null, conn: null, code: "", myName: "", hname: "", gname: "", form: { name: "", code: "" }, lastRx: 0, hb: 0, inT: 0, snapAcc: 0, seq: 0, evq: [], snaps: [], pmap: null, saved: null, inMatch: false, res: null, busy: false };
+      const SH_S = ["len", "weather", "tod", "pitch", "design", "linec", "ball", "gk"], SH_R = ["gameMode", "offside", "fouls", "cards", "injuries", "handball"];
+      const LOBBY_ROWS = ["len", "weather", "tod", "pitch", "design", "linec", "ball", "gk", "gm", "off", "foul", "cards", "inj", "hand"];
+      const PEER_URLS = ["https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js", "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js", "https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"];
+      const CODE_CH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", ID_PRE = "fc26duel-";
+      const onlClean = (s) => String(s || "").replace(/[^\w .\-]/g, "").trim().slice(0, 14);
+      const r2 = (v) => Math.round(v * 100) / 100;
+      const lid = (id) => (1 - ((id / 11) | 0)) * 11 + (id % 11); // host player id -> the same player's id in the guest's mirrored world
+      const pid = (p) => p.team * 11 + p.idx;
+      function onlSend(m) { try { if (ONLN.conn && ONLN.conn.open) ONLN.conn.send(m); } catch (e) {} }
+      function onlMsg(t, ok) { const e = $("onl-msg"); if (e) { e.textContent = t || ""; e.className = "onl-msg" + (ok ? " ok" : ""); } }
+      function onlLoadPeer() {
+        if (window.Peer) return Promise.resolve();
+        return new Promise((res, rej) => {
+          let i = 0;
+          const next = () => {
+            if (i >= PEER_URLS.length) return rej(new Error("peerjs"));
+            const s = document.createElement("script");
+            s.src = PEER_URLS[i++];
+            s.onload = () => (window.Peer ? res() : next());
+            s.onerror = () => { s.remove(); next(); };
+            document.body.appendChild(s);
+          };
+          next();
+        });
+      }
+      const peerOpts = () => Object.assign({ debug: 0 }, window.FC_PEER_OPTS || {});
+      // ---- shared settings ----
+      function sharedSettings() {
+        const o = { s: {}, r: {} };
+        for (const k of SH_S) o.s[k] = S[k];
+        for (const k of SH_R) o.r[k] = RULES[k];
+        return o;
+      }
+      function applyShared(o) {
+        if (!o) return;
+        for (const k of SH_S) if (Number.isFinite(o.s[k])) S[k] = o.s[k];
+        for (const k of SH_R) if (typeof o.r[k] === "boolean") RULES[k] = o.r[k];
+        RULES.shootout = false;
+        RULES.replays = false;
+      }
+      function onlSaveLocal() {
+        if (ONLN.saved) return;
+        ONLN.saved = { s: Object.assign({}, S), r: Object.assign({}, RULES) };
+      }
+      function onlRestoreLocal() {
+        if (!ONLN.saved) return;
+        Object.assign(S, ONLN.saved.s);
+        Object.assign(RULES, ONLN.saved.r);
+        ONLN.saved = null;
+        try { applyConditions(); buildPitch(S.pitch); setBallStyle(S.ball); ensureTeams(); } catch (e) {}
+      }
+      const lobbyState = () => ({ hn: ONLN.hname, gn: ONLN.gname, h: S.h, a: S.a, set: sharedSettings() });
+      function onlBroadcastLobby() {
+        onlSend({ t: "lobby", st: lobbyState() });
+        onlRefresh();
+      }
+      function onlRefresh() { if (ONL_SCR.includes(scr) && !LD.on) render(); }
+      // ---- party lifecycle ----
+      function onlResetNet() {
+        clearInterval(ONLN.hb);
+        clearInterval(ONLN.inT);
+        try { if (ONLN.conn) ONLN.conn.close(); } catch (e) {}
+        try { if (ONLN.peer) ONLN.peer.destroy(); } catch (e) {}
+        Object.assign(ONLN, { peer: null, conn: null, code: "", hname: "", gname: "", snaps: [], evq: [], inMatch: false, pmap: null, busy: false });
+        ONL.on = false; ONL.role = ""; ONL.seat1 = false; ONL.rk = false; ONL.ready = false;
+        if (SEAT_I === 1) seatX();
+        const pz = $("onl-pz"); if (pz) pz.style.display = "none";
+      }
+      function onlLeave(msg, dest) {
+        const wasPlaying = phase === "play" || phase === "end";
+        onlSend({ t: "bye" });
+        onlResetNet();
+        onlRestoreLocal();
+        if (wasPlaying) {
+          flushMatchAudio(true);
+          phase = "menu";
+          SO.on = false; soRender();
+          restoreSquad();
+          kickoff(0);
+          say("");
+          $("hint").style.opacity = 0;
+        }
+        ko.style.display = "flex";
+        show(dest || "online");
+        if (msg) toast(msg, 3200);
+      }
+      function onlHeartbeat() {
+        clearInterval(ONLN.hb);
+        ONLN.lastRx = performance.now();
+        ONLN.hb = setInterval(() => {
+          onlSend({ t: "ping" });
+          if (performance.now() - ONLN.lastRx > 25000) onlPeerGone();
+        }, 2000);
+      }
+      function onlPeerGone() {
+        if (ONL.role === "guest") return onlLeave("Lost connection to the host");
+        if (ONL.role !== "host" || !ONLN.conn) return;
+        clearInterval(ONLN.inT);
+        try { ONLN.conn.close(); } catch (e) {}
+        ONLN.conn = null;
+        ONLN.gname = "";
+        if (ONL.on) onlAbortMatch("Your opponent left the match");
+        else { onlBroadcastLobby(); toast("Opponent left the party", 2500); }
+      }
+      function onlAbortMatch(msg) {
+        ONL.on = false; ONL.seat1 = false; ONL.rk = false; ONLN.inMatch = false;
+        if (SEAT_I === 1) seatX();
+        const pz = $("onl-pz"); if (pz) pz.style.display = "none";
+        flushMatchAudio(true);
+        phase = "menu";
+        SO.on = false; soRender();
+        restoreSquad();
+        kickoff(0);
+        say("");
+        $("hint").style.opacity = 0;
+        ko.style.display = "flex";
+        show("lobby");
+        if (msg) toast(msg, 3200);
+      }
+      async function onlCreate() {
+        if (ONLN.busy) return;
+        ONLN.busy = true;
+        onlMsg("Creating party…");
+        try { await onlLoadPeer(); } catch (e) { ONLN.busy = false; return onlMsg("Could not load the online library. Check your connection."); }
+        onlSaveLocal();
+        const name = onlClean(ONLN.form.name) || onlClean(localStorage.getItem("fc26-duel-name")) || onlClean(HOME_NAME) || "Player";
+        for (let tries = 0; tries < 6; tries++) {
+          let code = "";
+          for (let i = 0; i < 5; i++) code += CODE_CH[(Math.random() * CODE_CH.length) | 0];
+          const r = await new Promise((resolve) => {
+            let p;
+            try { p = new Peer(ID_PRE + code, peerOpts()); } catch (e) { return resolve({ err: "init" }); }
+            const to = setTimeout(() => { try { p.destroy(); } catch (e) {} resolve({ err: "timeout" }); }, 12000);
+            p.on("open", () => { clearTimeout(to); resolve({ p }); });
+            p.on("error", (e) => { clearTimeout(to); try { p.destroy(); } catch (x) {} resolve({ err: e.type }); });
+          });
+          if (r.p) {
+            ONLN.peer = r.p; ONLN.code = code; ONLN.hname = name; ONLN.myName = name; ONLN.gname = "";
+            ONL.role = "host";
+            r.p.on("connection", onlHostConn);
+            r.p.on("disconnected", () => { try { r.p.reconnect(); } catch (e) {} });
+            r.p.on("error", () => {});
+            S.user = "home"; S.koSide = "home";
+            ONLN.busy = false;
+            onlHeartbeat();
+            ko.style.display = "flex";
+            return nav(() => show("lobby"));
+          }
+          if (r.err !== "unavailable-id") { ONLN.busy = false; onlRestoreLocal(); return onlMsg(r.err === "timeout" ? "Could not reach the matchmaking service. Try again." : "Could not create the party (" + r.err + ")"); }
+        }
+        ONLN.busy = false;
+        onlMsg("Could not create a party. Try again.");
+      }
+      function onlHostConn(conn) {
+        conn.on("data", (m) => { if (conn === ONLN.conn || (m && m.t === "hello")) onlHostData(conn, m); });
+        conn.on("close", () => { if (conn === ONLN.conn) onlPeerGone(); });
+        conn.on("error", () => {});
+      }
+      function onlHostData(conn, m) {
+        if (!m || typeof m !== "object") return;
+        if (m.t === "hello") {
+          if (ONLN.conn && ONLN.conn.open && ONLN.conn !== conn) { try { conn.send({ t: "full" }); } catch (e) {} setTimeout(() => { try { conn.close(); } catch (e) {} }, 400); return; }
+          ONLN.conn = conn;
+          ONLN.lastRx = performance.now();
+          ONLN.gname = onlClean(m.name) || "Guest";
+          if (ONLN.gname.toLowerCase() === ONLN.hname.toLowerCase()) ONLN.gname += "2";
+          onlSend({ t: "welcome", st: lobbyState() });
+          onlBroadcastLobby();
+          toast(ONLN.gname + " joined the party", 2200);
+          return;
+        }
+        ONLN.lastRx = performance.now();
+        if (m.t === "ping") onlSend({ t: "pong" });
+        else if (m.t === "team") { if (Number.isInteger(m.i) && m.i >= 0 && m.i < TEAMS.length && m.i !== S.h && !ONL.on) { S.a = m.i; onlBroadcastLobby(); } }
+        else if (m.t === "bye") onlPeerGone();
+        else if (m.t === "i") { ONL.mv1 = [+m.x || 0, +m.z || 0]; SEAT1.keys.ShiftLeft = m.sh ? 1 : 0; SEAT1.lockOn = !!m.lk; }
+        else if (m.t === "k") onlHostKey(m.c, m.d);
+        else if (m.t === "kr") { if (SEAT_I === 0) for (const k in SEAT1.keys) SEAT1.keys[k] = 0; }
+      }
+      async function onlJoin() {
+        if (ONLN.busy) return;
+        const name = onlClean(ONLN.form.name), code = String(ONLN.form.code || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+        if (!name) return onlMsg("Enter a duel name first.");
+        if (code.length < 4) return onlMsg("Enter the party code.");
+        try { localStorage.setItem("fc26-duel-name", name); } catch (e) {}
+        ONLN.busy = true;
+        onlMsg("Connecting…", true);
+        try { await onlLoadPeer(); } catch (e) { ONLN.busy = false; return onlMsg("Could not load the online library. Check your connection."); }
+        onlSaveLocal();
+        const fail = (t) => { ONLN.busy = false; onlResetNet(); onlRestoreLocal(); onlMsg(t); };
+        let p;
+        try { p = new Peer(undefined, peerOpts()); } catch (e) { return fail("Could not start the connection."); }
+        ONLN.peer = p;
+        let welcomed = false;
+        const to = setTimeout(() => { if (!welcomed) fail("Could not reach that party. Check the code and try again."); }, 15000);
+        p.on("error", (e) => { if (welcomed) return; clearTimeout(to); fail(e.type === "peer-unavailable" ? "No party found with that code." : "Connection error (" + e.type + ").") });
+        p.on("open", () => {
+          const conn = p.connect(ID_PRE + code, { reliable: true, serialization: "json" });
+          conn.on("open", () => { ONLN.conn = conn; conn.send({ t: "hello", name }); });
+          conn.on("data", (m) => {
+            if (!m || typeof m !== "object") return;
+            ONLN.lastRx = performance.now();
+            if (m.t === "full") { clearTimeout(to); return fail("That party is full."); }
+            if (m.t === "welcome" && !welcomed) {
+              welcomed = true; clearTimeout(to);
+              ONLN.busy = false; ONLN.code = code; ONLN.myName = name; ONL.role = "guest";
+              onlHeartbeat();
+              onlGuestLobby(m.st);
+              ko.style.display = "flex";
+              nav(() => show("lobby"));
+              return;
+            }
+            if (welcomed) onlGuestData(m);
+          });
+          conn.on("close", () => { if (welcomed && ONL.role === "guest") onlLeave("The host closed the party"); else if (!welcomed) { clearTimeout(to); fail("The party closed the connection."); } });
+          conn.on("error", () => {});
+        });
+      }
+      function onlGuestLobby(st) {
+        if (!st) return;
+        ONLN.hname = st.hn; ONLN.gname = ONLN.myName || st.gn;
+        S.h = st.h; S.a = st.a; S.user = "away";
+        applyShared(st.set);
+      }
+      function onlGuestData(m) {
+        if (m.t === "ping") return onlSend({ t: "pong" });
+        if (m.t === "lobby") { if (!ONL.on) { onlGuestLobby(m.st); onlRefresh(); } }
+        else if (m.t === "kick") onlLeave("You were kicked from the party");
+        else if (m.t === "bye") onlLeave(ONL.on ? "The host ended the match" : "The host closed the party");
+        else if (m.t === "start") onlGuestStart(m.st);
+        else if (m.t === "snap") { m.at = performance.now(); ONLN.snaps.push(m); if (ONLN.snaps.length > 12) ONLN.snaps.shift(); }
+        else if (m.t === "end") onlGuestEnd(m.res);
+      }
+      function onlTeamAdj(d) {
+        if (ONL.role !== "guest" || ONL.on) return;
+        let n = S.a;
+        do n = (n + d + TEAMS.length) % TEAMS.length; while (n === S.h);
+        S.a = n;
+        onlSend({ t: "team", i: n });
+        render();
+      }
+      // ---- starting a match ----
+      function resetSeat1() {
+        if (SEAT_I === 1) seatX();
+        SEAT1.ctrl = null; SEAT1.swT = 0; SEAT1.lockOn = true; SEAT1.T = 1; SEAT1.I = 1;
+        Object.assign(SEAT1.chg, { k: null, t: 0, mode: null, ct: 0 });
+        Object.assign(SEAT1.act, { tackle: 0, slide: 0, sp: null, hit: false, pend: null });
+        SEAT1.keys = {};
+        ONL.mv1 = [0, 0];
+      }
+      function onlStart() {
+        if (ONL.role !== "host") return;
+        if (!ONLN.conn || !ONLN.conn.open) return toast("Waiting for an opponent to join", 2000);
+        RULES.shootout = false; RULES.replays = false; window.__spursBoost = false;
+        S.user = "home"; S.koSide = "home"; S.adv = 0;
+        ensureTeams();
+        onlSend({ t: "start", st: lobbyState() });
+        ONLN.inMatch = true; ONLN.snapAcc = 0; ONLN.seq = 0; ONLN.evq = [];
+        resetSeat1();
+        ONL.on = true; ONL.role = "host"; ONL.seat1 = true;
+        loadScreen(() => start());
+      }
+      function onlGuestStart(st) {
+        onlGuestLobby(st);
+        RULES.shootout = false; RULES.replays = false; window.__spursBoost = false;
+        ONL.on = true; ONL.role = "guest"; ONL.seat1 = false; ONL.ready = false;
+        ONLN.snaps = []; ONLN.inMatch = true;
+        loadScreen(clientStart);
+      }
+      function clientStart() {
+        rpAbort();
+        pendSide = null;
+        ensureTeams();
+        audioEngine();
+        flushMatchAudio();
+        if (AX && !LDCOVER) { const t = AX.c.currentTime; AX.mgate.gain.cancelScheduledValues(t); AX.mgate.gain.setValueAtTime(1, t); }
+        window.focus();
+        try { applyConditions(); buildPitch(S.pitch); setBallStyle(S.ball); } catch (e) {}
+        TPM = (LENS[S.len] * 60) / 45;
+        restoreSquad();
+        Object.assign(SO, { on: false, state: "", kick: 0, res: [[], []], taker: null, over: false });
+        soRender();
+        $("cardpop").style.opacity = 0;
+        score = [0, 0];
+        scorers = [[], []];
+        msReset();
+        time = 0; flip = 1; half2 = false; pendFlip = false; pauseOpen = false; resultInfo = null; freeze = 0; celeb = 0;
+        phase = "play";
+        ko.style.display = "none";
+        $("pause").style.display = "none";
+        chg.k = null; chg.t = 0;
+        ctrl = null;
+        ONLN.pmap = new Map(P.map((p) => [pid(p), p]));
+        ONL.ready = true;
+        clearInterval(ONLN.inT);
+        ONLN.inT = setInterval(onlGuestSendInput, 33);
+        upd();
+        say("KICK OFF", 1200);
+      }
+      // ---- host: snapshots out, guest controls in ----
+      function onlSnap() {
+        const pl = [], ex = [], of = [];
+        for (const p of P) {
+          pl.push([pid(p), r2(p.pos.x), r2(p.pos.z), r2(p.vel.x), r2(p.vel.z), r2(p.d.x), r2(p.d.z), (p.stun > 0 ? 1 : 0) | (p.injured ? 2 : 0), Math.round((p.stam === undefined ? 1 : p.stam) * 100), r2(p.gset || 0), r2(p.limp || 1)]);
+          const e = {};
+          if (p.kick) e.k = p.kick;
+          if (p.dive) e.dv = p.dive;
+          if (p.trap) e.tr = p.trap;
+          if (p.hdr) e.hd = p.hdr;
+          if (p.tm) e.tm = p.tm;
+          if (p.cel) e.cl = p.cel;
+          if (p.runup) e.ru = { t: p.runup.t };
+          for (const k in e) { ex.push([pid(p), e]); break; }
+        }
+        for (const q of OFFS) of.push(pid(q));
+        const b = ball, c1 = SEAT1.ctrl;
+        const s = {
+          t: "snap", n: ++ONLN.seq,
+          pl, ex, of,
+          b: [r2(b.p.x), r2(b.p.y), r2(b.p.z), r2(b.v.x), r2(b.v.y), r2(b.v.z)],
+          bo: b.owner ? pid(b.owner) : -1, bl: b.lastTeam, bs: b.setp ? 1 : 0, bk: b.setk || "", bh: b.hand ? 1 : 0, bc: r2(b.curl || 0), bp: b.lobPass ? 1 : 0, bm: b.hm ? 1 : 0,
+          tm: r2(time), h2: half2 ? 1 : 0, fl: flip, fz: r2(freeze), ce: r2(celeb), ck: act.ck || "", sc: score.slice(), st: stopT,
+          co: c1 ? pid(c1) : -1,
+          me: [SEAT1.chg.k, r2(SEAT1.chg.t), SEAT1.chg.mode || null, SEAT1.chg.ct || 0],
+          as: [r2(SEAT1.act.tackle), r2(SEAT1.act.slide)],
+        };
+        if (ONLN.evq.length) { s.ev = ONLN.evq; ONLN.evq = []; }
+        return s;
+      }
+      function onlHostTick(dt) {
+        if (!ONLN.conn || !ONLN.conn.open) return;
+        ONLN.snapAcc += dt;
+        if (ONLN.snapAcc < 1 / 30) return;
+        ONLN.snapAcc = 0;
+        try { if (ONLN.conn.dataChannel && ONLN.conn.dataChannel.bufferedAmount > 200000) return; } catch (e) {}
+        onlSend(onlSnap());
+      }
+      function onlHostKey(c, d) {
+        if (!ONL.on || ONL.role !== "host" || phase !== "play" || SEAT_I !== 0) return;
+        if (!ONL_FWD.has(c)) return;
+        if (d && (celeb > 0)) return;
+        seatX();
+        try {
+          ONL.rk = true;
+          const ev = { code: c, repeat: false, target: null, preventDefault() {}, stopImmediatePropagation() {} };
+          if (d) gameKeyDown(ev); else gameKeyUp(ev);
+        } catch (e) { console.error(e); } finally { ONL.rk = false; seatX(); }
+      }
+      // presentation events (sounds, messages, cards) the host raises are replayed on the guest
+      const NETFX = ["sfxKick", "sfxThrow", "sfxBounce", "sfxHeader", "sfxTrap", "sfxTackle", "sfxSlide", "sfxSwipe", "sfxKeeper", "sfxNet", "postSound", "sfxMiss", "whistle", "tripleWhistle", "sfxKickoff", "sfxFullTime", "crowdReact", "goalSound", "say", "showCard", "sbGoal"];
+      for (const n of NETFX) {
+        const f = window[n];
+        if (typeof f !== "function") continue;
+        window[n] = function (...a) {
+          if (ONL.on && ONL.role === "host" && !ONL.silent) {
+            try { ONLN.evq.push([n, a.map((x) => (x && typeof x === "object" && x.team !== undefined && x.idx !== undefined ? { p: pid(x) } : x === undefined ? null : x))]); if (ONLN.evq.length > 60) ONLN.evq.shift(); } catch (e) {}
+          }
+          return f.apply(this, a);
+        };
+      }
+      // ---- guest: input out ----
+      const ONL_FWD = new Set(["KeyF", "KeyH", "KeyJ", "KeyK", "KeyX", "Semicolon", "Quote", "KeyE", "Digit1", "Digit2", "Numpad1", "Numpad2"]);
+      function onlGuestSendInput() {
+        if (!ONL.on || ONL.role !== "guest" || phase !== "play") return;
+        const [ix, iz] = inp();
+        onlSend({ t: "i", x: r2(-ix), z: r2(-iz), sh: sprint() ? 1 : 0, lk: lockOn ? 1 : 0 });
+      }
+      function onlKeyIntercept(e, down) {
+        const t = e.target;
+        if (t && t.tagName === "INPUT") return true; // typing in the duel name / party code boxes
+        if (ONL.rk) return false;
+        if (ONL.on && ONL.role === "guest" && phase === "play") return onlGuestKey(e, down);
+        return false;
+      }
+      function onlGuestKey(e, down) {
+        const c = e.code;
+        if (c === "Space" || c === "Quote" || c === "Semicolon") e.preventDefault();
+        if (down) {
+          if (c === "Escape" || c === "KeyP") { if (!e.repeat) onlPauseToggle(); return true; }
+          if (c === "KeyY") { if (!e.repeat) toggleHints(); return true; }
+          if (c === "KeyQ") { if (!e.repeat) { lockOn = !lockOn; saveSettings(); } return true; }
+          if (c === "KeyU" || c === "Equal") return true;
+          if (e.repeat) return true;
+          keys[c] = 1;
+          if (ONL_FWD.has(c)) onlSend({ t: "k", c, d: 1 });
+          else camKey(c);
+          return true;
+        }
+        keys[c] = 0;
+        if (ONL_FWD.has(c)) onlSend({ t: "k", c, d: 0 });
+        return true;
+      }
+      addEventListener("blur", () => { if (ONL.on && ONL.role === "guest") onlSend({ t: "kr" }); });
+      addEventListener("beforeunload", () => { try { onlSend({ t: "bye" }); } catch (e) {} });
+      // ---- guest: render the host's world, mirrored (x -> -x, z -> -z, teams swapped) ----
+      const mDive = (d) => ({ ...d, vz: -d.vz, dir: -d.dir });
+      const mTm = (d) => ({ ...d, h0: d.h0 + Math.PI });
+      const mCel = (d) => ({ ...d, tx: d.tx === undefined ? undefined : -d.tx, tz: d.tz === undefined ? undefined : -d.tz });
+      const advO = (o, ms) => (o && typeof o.t === "number" ? { ...o, t: o.t + ms / 1000 } : o);
+      function syncAnim(p, key, r, tol) {
+        const l = p[key];
+        if (!r) { if (l) p[key] = null; return; }
+        if (!l || l.kind !== r.kind || l.type !== r.type || l.ph !== r.ph || Math.abs((l.t || 0) - (r.t || 0)) > tol) p[key] = r;
+      }
+      function onlEvent(ev) {
+        const [n, a] = ev, pm = ONLN.pmap, f = window[n];
+        const arg = a.map((x) => (x && typeof x === "object" && x.p !== undefined ? pm.get(lid(x.p)) : x));
+        try {
+          if (n === "sbGoal") return sbGoal(1 - a[0]);
+          if (typeof f !== "function") return;
+          if (n === "showCard" && !arg[1]) return;
+          f.apply(null, arg);
+          if (n === "goalSound") { goalHype = true; hypeCheer = 4.2; hypeChant = 3.5; }
+        } catch (e) {}
+      }
+      function clientStep(dt) {
+        const sn = ONLN.snaps;
+        if (!ONL.ready || !sn.length) return;
+        const rt = performance.now() - 100;
+        let a = null, b = null;
+        for (const s of sn) { if (s.at <= rt) a = s; else { b = s; break; } }
+        if (!a) { a = sn[0]; b = null; }
+        while (sn.length > 3 && sn[1].at <= rt) sn.shift();
+        const f = b ? clamp((rt - a.at) / Math.max(1, b.at - a.at), 0, 1) : 0, pm = ONLN.pmap, lag = Math.max(0, rt - a.at);
+        if (!a.done) { a.done = true; if (a.ev) for (const ev of a.ev) onlEvent(ev); }
+        const bmap = new Map();
+        if (b) for (const r of b.pl) bmap.set(r[0], r);
+        const exm = new Map();
+        for (const [id, e] of a.ex) exm.set(id, e);
+        for (const r of a.pl) {
+          const p = pm.get(lid(r[0]));
+          if (!p) continue;
+          const q = bmap.get(r[0]);
+          const x = q ? r[1] + (q[1] - r[1]) * f : r[1], z = q ? r[2] + (q[2] - r[2]) * f : r[2];
+          const vx = q ? r[3] + (q[3] - r[3]) * f : r[3], vz = q ? r[4] + (q[4] - r[4]) * f : r[4];
+          p.pos.set(-x, 0, -z);
+          p.vel.set(-vx, 0, -vz);
+          p.d.set(-r[5], 0, -r[6]);
+          p.stun = r[7] & 1 ? 0.5 : 0;
+          p.injured = !!(r[7] & 2);
+          p.stam = r[8] / 100;
+          p.gset = r[9];
+          p.limp = r[10];
+          const e = exm.get(r[0]) || {};
+          syncAnim(p, "kick", e.k || null, 0.15);
+          syncAnim(p, "trap", e.tr || null, 0.15);
+          syncAnim(p, "hdr", e.hd || null, 0.15);
+          p.dive = e.dv ? advO(mDive(e.dv), lag) : null;
+          p.tm = e.tm ? advO(mTm(e.tm), lag) : null;
+          p.cel = e.cl ? advO(mCel(e.cl), lag) : null;
+          p.runup = e.ru || null;
+        }
+        for (const id of a.of) { const p = pm.get(lid(id)); if (p && P.includes(p)) sendOff(p); }
+        const ba = a.b, bb = b ? b.b : ba, L = (i) => ba[i] + (bb[i] - ba[i]) * f;
+        ball.p.set(-L(0), L(1), -L(2));
+        ball.v.set(-L(3), L(4), -L(5));
+        ball.owner = a.bo >= 0 ? pm.get(lid(a.bo)) || null : null;
+        ball.lastTeam = 1 - a.bl;
+        ball.lastP = ball.owner || ball.lastP;
+        ball.setp = !!a.bs; ball.setk = a.bk; ball.hand = !!a.bh; ball.curl = -a.bc; ball.lobPass = !!a.bp; ball.hm = !!a.bm;
+        ball.rcv = null; ball.strike = null;
+        time = a.tm; half2 = !!a.h2; flip = a.fl; freeze = a.fz;
+        const wasCeleb = celeb; celeb = a.ce;
+        if (wasCeleb > 0 && celeb <= 0) goalHype = false;
+        act.ck = a.ck;
+        score = [a.sc[1], a.sc[0]];
+        stopT = a.st;
+        ctrl = a.co >= 0 ? pm.get(lid(a.co)) || null : null;
+        chg.k = a.me[0]; chg.t = a.me[1]; chg.mode = a.me[2]; chg.ct = a.me[3];
+        act.tackle = a.as[0]; act.slide = a.as[1];
+        upd();
+      }
+      // ---- end of match ----
+      function onlEndMatch() {
+        rpAbort();
+        phase = "end";
+        sfxFullTime();
+        $("ph").textContent = "FULL TIME";
+        $("ad").style.display = "none";
+        say("");
+        const T0 = TEAMS[sel[0]], T1 = TEAMS[sel[1]];
+        const res = { n: [T0.name, T1.name], c: [accent(T0), accent(T1)], s: [score[0], score[1]], ln: [scorers[0], scorers[1]], who: [ONLN.hname, ONLN.gname] };
+        onlSend({ t: "end", res });
+        ONL.on = false; ONL.seat1 = false; ONLN.inMatch = false;
+        clearInterval(ONLN.inT);
+        restoreSquad();
+        soRender();
+        onlShowResult(res);
+      }
+      function onlGuestEnd(res) {
+        if (!res) return;
+        phase = "end";
+        sfxFullTime();
+        $("ph").textContent = "FULL TIME";
+        $("ad").style.display = "none";
+        say("");
+        ONL.on = false; ONL.ready = false; ONLN.inMatch = false;
+        clearInterval(ONLN.inT);
+        const sw = (a) => [a[1], a[0]];
+        restoreSquad();
+        onlShowResult({ n: sw(res.n), c: sw(res.c), s: sw(res.s), ln: sw(res.ln), who: sw(res.who) }, true);
+      }
+      function onlShowResult(res, mirrored) {
+        // res arrays are in [home-team-of-this-screen, other] order as seen by this player (own team first)
+        ONLN.res = res;
+        const pz = $("onl-pz"); if (pz) pz.style.display = "none";
+        ko.style.display = "flex";
+        show("onlres");
+      }
+      function onlPauseToggle() {
+        if (!ONL.on) return;
+        let el = $("onl-pz");
+        if (el && el.dataset.role !== ONL.role) { el.remove(); el = null; }
+        if (!el) {
+          el = document.createElement("div");
+          el.id = "onl-pz";
+          el.dataset.role = ONL.role;
+          el.innerHTML = '<div class="onl-pzbox"><h3>ONLINE MATCH</h3><p>The match keeps running while this menu is open.</p><button data-a="res">RESUME</button>' + (ONL.role === "host" ? '<button data-a="kick" class="red">KICK OPPONENT</button>' : "") + '<button data-a="leave" class="red">LEAVE MATCH</button></div>';
+          document.body.appendChild(el);
+          el.addEventListener("click", (e) => {
+            const a = e.target.dataset && e.target.dataset.a;
+            if (a === "res") el.style.display = "none";
+            if (a === "kick") { el.style.display = "none"; ACT.onlKick(); }
+            if (a === "leave") { el.style.display = "none"; ONL.role === "host" ? onlLeave("You left the match") : onlLeave("You left the match"); }
+          });
+        }
+        el.style.display = el.style.display === "flex" ? "none" : "flex";
+      }
+      // ---- screens ----
+      V.online = () => `<section class="onl"><div class="onl-card">
+        <h2>1v1 ONLINE</h2><p>Play a friend over the internet. One of you creates a party and shares the code, the other joins with it.</p>
+        <div class="pb" data-f data-id="onl-create" data-do="onlCreate"><i class="bt a">✕</i>Create Party</div>
+        <div class="pb" data-f data-id="onl-join" data-do="onlJoinForm"><i class="bt a">✕</i>Join Party</div>
+        <div class="pb" data-f data-id="onl-back" data-do="onlBackHome"><i class="bt b">○</i>Back</div>
+        <div class="onl-msg" id="onl-msg"></div></div></section>`;
+      V.onjoin = () => `<section class="onl"><div class="onl-card">
+        <h2>JOIN PARTY</h2><p>Enter your duel name and the party code from your friend.</p>
+        <label class="onl-in" data-f data-id="onj-name" data-do="onlFocusIn" data-arg="onj-name-i"><span>DUEL NAME</span><input id="onj-name-i" maxlength="14" autocomplete="off" spellcheck="false" placeholder="Your name" value="${esc(ONLN.form.name)}"></label>
+        <label class="onl-in" data-f data-id="onj-code" data-do="onlFocusIn" data-arg="onj-code-i"><span>PARTY CODE</span><input id="onj-code-i" maxlength="6" autocomplete="off" spellcheck="false" placeholder="e.g. K7M2Q" value="${esc(ONLN.form.code)}" style="text-transform:uppercase;letter-spacing:4px"></label>
+        <div class="pb" data-f data-id="onj-go" data-do="onlJoin"><i class="bt a">✕</i>Join</div>
+        <div class="pb" data-f data-id="onj-back" data-do="onlJoinBack"><i class="bt b">○</i>Back</div>
+        <div class="onl-msg" id="onl-msg"></div></div></section>`;
+      V.lobby = () => {
+        const host = ONL.role === "host", hn = ONLN.hname, gn = ONLN.gname, hasG = !!gn;
+        const pc = (who) => {
+          const mine = (who === "h") === host, T = TEAMS[who === "h" ? S.h : S.a], nm = who === "h" ? hn : gn;
+          const selr = mine ? `<div class="row onl-tsel" data-f data-id="lb-team" data-adj="${host ? "team0" : "lbteam"}"><span class="rv"><b data-d="-1">◂</b><em>${esc(T.name)}</em><b data-d="1">▸</b></span></div>` : `<div class="onl-tn">${esc(T.name)}</div>`;
+          return `<div class="onl-pc ${who}${nm ? "" : " wait"}"><div class="onl-role">${who === "h" ? "HOST" : "OPPONENT"}${mine ? " · YOU" : ""}</div>${crestHTML(T, 64)}<div class="onl-nm">${nm ? esc(nm) : "Waiting for opponent…"}</div>${nm ? selr : ""}</div>`;
+        };
+        const rows = LOBBY_ROWS.map((id) => {
+          if (host) return srow(id);
+          const [l, v] = setRow(id);
+          return `<div class="row onl-ro"><span class="rl">${l}</span><span class="rv"><em>${v}</em></span></div>`;
+        }).join("");
+        const btns = host
+          ? `<div class="pb${hasG ? "" : " dis"}" data-f data-id="lb-start" data-do="onlStart"><i class="bt a">✕</i>Start Match</div>${hasG ? '<div class="pb" data-f data-id="lb-kick" data-do="onlKick"><i class="bt x">□</i>Kick ' + esc(gn) + "</div>" : ""}`
+          : `<div class="onl-wait">Waiting for the host to start the match…</div>`;
+        return `<section class="onl onl-lobby"><div class="onl-left">
+          <div class="onl-code"><small>PARTY CODE</small><b>${esc(ONLN.code)}</b><span class="onl-cp" data-f data-id="lb-copy" data-do="onlCopy">Copy</span></div>
+          <div class="onl-pcs">${pc("h")}<div class="onl-vs">VS</div>${pc("a")}</div>
+          <div class="onl-btns">${btns}<div class="pb" data-f data-id="lb-leave" data-do="onlLeaveParty"><i class="bt b">○</i>Leave Party</div></div></div>
+          <div class="onl-right"><h4>${host ? "MATCH SETTINGS" : "MATCH SETTINGS · SET BY HOST"}</h4><div class="sg-list onl-set">${rows}</div></div></section>`;
+      };
+      V.onlres = () => {
+        const r = ONLN.res || { n: ["", ""], c: ["#fff", "#fff"], s: [0, 0], ln: [[], []], who: ["", ""] };
+        const win = r.s[0] === r.s[1] ? "DRAW" : r.s[0] > r.s[1] ? "YOU WIN" : "YOU LOSE";
+        const lines = r.ln[0].concat(r.ln[1]).map(esc).join("<br>");
+        return `<section class="onl"><div class="onl-card wide"><h2>FULL TIME</h2><div class="onl-win">${win}</div>
+          <div class="onl-sc"><span style="color:${r.c[0]}">${esc(r.n[0])}<small>${esc(r.who[0] || "")}</small></span><b>${r.s[0]} – ${r.s[1]}</b><span style="color:${r.c[1]}">${esc(r.n[1])}<small>${esc(r.who[1] || "")}</small></span></div>
+          <div class="onl-scorers">${lines}</div>
+          <div class="pb" data-f data-id="res-lobby" data-do="onlToLobby"><i class="bt a">✕</i>Back to Lobby</div>
+          <div class="pb" data-f data-id="res-leave" data-do="onlLeaveParty"><i class="bt b">○</i>Leave Party</div></div></section>`;
+      };
+      Object.assign(DEFF, { online: "onl-create", onjoin: "onj-name", lobby: "lb-start", onlres: "res-lobby" });
+      Object.assign(HINTS, {
+        online: [["a", "Enter", "Select"], ["b", "Esc", "Back"]],
+        onjoin: [["a", "Enter", "Select"], ["b", "Esc", "Back"]],
+        lobby: [["dp", "← →", "Change"], ["a", "Enter", "Select"], ["b", "Esc", "Leave Party"]],
+        onlres: [["a", "Enter", "Select"], ["b", "Esc", "Back to Lobby"]],
+      });
+      Object.assign(ACT, {
+        onlCreate: () => onlCreate(),
+        onlJoinForm: () => nav(() => show("onjoin")),
+        onlBackHome: () => nav(() => show("home")),
+        onlJoinBack: () => nav(() => show("online")),
+        onlJoin: () => { const a = $("onj-name-i"), c = $("onj-code-i"); if (a) ONLN.form.name = a.value; if (c) ONLN.form.code = c.value; onlJoin(); },
+        onlFocusIn: (id) => { const e = $(id); if (e) { e.focus(); try { e.setSelectionRange(e.value.length, e.value.length); } catch (x) {} } },
+        onlStart: () => onlStart(),
+        onlKick: () => { if (!ONLN.conn) return; onlSend({ t: "kick" }); const c = ONLN.conn; ONLN.conn = null; const g = ONLN.gname; ONLN.gname = ""; setTimeout(() => { try { c.close(); } catch (e) {} }, 300); clearInterval(ONLN.inT); if (ONL.on) onlAbortMatch(g + " was kicked"); else { onlBroadcastLobby(); toast(g + " was kicked", 2200); } },
+        onlLeaveParty: () => onlLeave(""),
+        onlToLobby: () => nav(() => show("lobby")),
+        onlCopy: () => { try { navigator.clipboard.writeText(ONLN.code); toast("Party code copied", 1400); } catch (e) { toast("Code: " + ONLN.code, 2500); } },
+      });
+      function onlScreenAct(a) {
+        const cur = main.querySelector(".nf");
+        if (a === "back") {
+          if (scr === "online") return nav(() => show("home"));
+          if (scr === "onjoin") return nav(() => show("online"));
+          if (scr === "onlres") return nav(() => show("lobby"));
+          return onlLeave("");
+        }
+        if (a === "left" || a === "right") { if (cur && cur.dataset.adj) return adj(cur.dataset.adj, a === "left" ? -1 : 1); return navDir(a); }
+        if (DIRS.includes(a)) return navDir(a);
+        if (a === "accept") return cur && activate(cur);
+      }
+      // text boxes: Enter moves on / submits, Escape and arrows give the menu back its keys
+      document.addEventListener("input", (e) => {
+        if (e.target.id === "onj-name-i") ONLN.form.name = e.target.value;
+        if (e.target.id === "onj-code-i") { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""); ONLN.form.code = e.target.value; }
+      });
+      document.addEventListener("keydown", (e) => {
+        const t = e.target;
+        if (!t || t.tagName !== "INPUT") return;
+        e.stopPropagation();
+        if (e.code === "Enter" || e.code === "NumpadEnter") {
+          e.preventDefault();
+          if (t.id === "onj-name-i") $("onj-code-i").focus();
+          else { t.blur(); ACT.onlJoin(); }
+        } else if (e.code === "Escape" || e.code === "ArrowDown" || e.code === "ArrowUp") {
+          e.preventDefault();
+          t.blur();
+          const lab = t.closest("[data-f]");
+          if (lab) setNF(lab, true);
+          if (e.code === "ArrowDown") navDir("down");
+          else if (e.code === "ArrowUp") navDir("up");
+        }
+      }, true);
+      document.addEventListener("keyup", (e) => { if (e.target && e.target.tagName === "INPUT") e.stopPropagation(); }, true);
+
       // ---- match flow ----
       function start() {
         rpAbort();
@@ -10318,6 +11077,7 @@ vIndirectBack = vIndirectFront;
         say(SPEC() ? "KICK OFF · SPECTATING" : "KICK OFF", 1200);
       }
       function endMatch() {
+        if (ONL.on) return onlEndMatch();
         rpAbort();
         phase = "end";
         sfxFullTime();
@@ -10739,7 +11499,7 @@ vIndirectBack = vIndirectFront;
       }
       function clearGameInput() { for (const k in keys) keys[k] = 0; joy.on = false; joy.x = joy.y = 0; }
       function musOpen() {
-        if (MUS.open || booting) return;
+        if (MUS.open || booting || (ONL.on && phase === "play")) return;
         MUS.open = true;
         MUS.pm = null;
         MUS.sel = MUS.idx >= 0 ? MUS.idx : 0;
@@ -10883,6 +11643,7 @@ vIndirectBack = vIndirectFront;
         const stopHold = () => { clearTimeout(mt); clearInterval(mIv); mt = 0; musRing(-1); };
         addEventListener("keydown", (e) => {
           if (booting) return;
+          if (e.target && e.target.tagName === "INPUT") return;
           if (MUS.open) {
             e.stopImmediatePropagation();
             if (e.cancelable) e.preventDefault();
@@ -10973,6 +11734,7 @@ vIndirectBack = vIndirectFront;
         if (scr === "padcal" && phase !== "play") padcalLive();
         if (phase === "play" && !isHeld() && !MUS.open) {
           if (RP.on) rpAdvance(dt);
+          else if (ONL.on && ONL.role === "guest") clientStep(dt);
           else step(dt);
         }
         try { sfxFrame(dt); } catch (e) {}
