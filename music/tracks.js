@@ -12,5 +12,5 @@ window.MUSIC_TRACKS = [
   { file: "passe_a_respeitar.mp3", title: "PASSE A RESPEITAR", artist: "Papatinho, Naldo Benny, Fernanda Abreu, BK, DJ Chernobyl", art: "images/misc/copsandrobbers.jpg"},
   { file: "bang_bang.mp3", title: "Bang Bang", artist: "Friction (ft. Stylo G, Riko Dan & Frisco)", art: "images/misc/bang_bang.jpg"},
   { file: "victory_lap.mp3", title: "Victory Lap", artist: "Fred Again", art: "images/misc/victory_lap.jpg"},
-  { file: "nobillo.mp3", title: "NiBillo", artist: "Raf Saperra & Ikky", art: "nibillo.jpg"},
+  { file: "nobillo.mp3", title: "NiBillo", artist: "Raf Saperra & Ikky", art: "images/misc/nibillo.jpg"},
 ];
