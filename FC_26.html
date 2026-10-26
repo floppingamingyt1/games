@@ -2313,7 +2313,7 @@ vIndirectBack = vIndirectFront;
         CROWD.build = buildCrowd;
       })();
       // ---------------------------------------------------------------------------------
-      // Stadium 2: a tight, continuous two-tier rectangular bowl with rounded corners (Brisbane rectangular-stadium style).
+      // Stadium 2: a tight, continuous two-tier rectangular bowl with rounded corners (Suncorp Stadium style).
       // Lower bowl, concourse, a band of corporate suites, a steeper upper deck, and a partly open cantilever roof with exposed
       // steel trusses, a bright raised lip and floodlight banks. Red / maroon seating, concrete and steel. No real signage.
       // It is built the first time the Stadium setting is switched to it, and lives in its own group (STAD2).
@@ -7917,10 +7917,10 @@ vIndirectBack = vIndirectFront;
         const ax = Math.abs(p[0]),
           az = Math.abs(p[2]);
         if (ax <= 56.3 && az <= 36.5) return p;
-        let S = 0;
-        if (az > 36.5 && ax <= 80) S = Math.max(S, 0.9 + Math.min(25, Math.max(0, (az - 37.4) / 0.82)) * 0.64);
-        if (ax > 56.3 && az <= 38) S = Math.max(S, 0.9 + Math.min(25, Math.max(0, (ax - 57.1) / 0.82)) * 0.64);
-        if (p[1] < S + 2.6) p[1] = S + 2.6;
+        let sh = 0;
+        if (az > 36.5 && ax <= 80) sh = Math.max(sh, 0.9 + Math.min(25, Math.max(0, (az - 37.4) / 0.82)) * 0.64);
+        if (ax > 56.3 && az <= 38) sh = Math.max(sh, 0.9 + Math.min(25, Math.max(0, (ax - 57.1) / 0.82)) * 0.64);
+        if (p[1] < sh + 2.6) p[1] = sh + 2.6;
         return p;
       }
       // Second stadium: the roof, trusses, lip and rear cladding on a side are hidden while the camera is out over / behind that side
@@ -9486,7 +9486,7 @@ vIndirectBack = vIndirectFront;
             <div class="pb" data-f data-id="selkits" data-go="kits"><i class="bt a">✕</i>Select Kits</div>
             <div class="pb" data-f data-id="selsides" data-go="sides"><i class="bt a">✕</i>Select Sides</div></div></section>
           <div class="h2h"><h4>Overall H2H</h4><div><div class="lb" style="color:#2fd9c0">Wins</div>${hc(wh, "#2fd9c0")}</div><div><div class="lb" style="color:#9eabbd">Draws</div>${hc(dr, "#9eabbd")}</div><div><div class="lb" style="color:#9be34a">Wins</div>${hc(wa, "#9be34a")}</div></div>
-          <div class="infobar"><span><b>Stadium:</b> Derby Day Arena</span><span><b>Difficulty:</b> ${d.n}</span><span><b>Conditions:</b> ${WEATHERS[S.weather].n} | ${TODS[S.tod].t}</span></div>`;
+          <div class="infobar"><span><b>Stadium:</b> ${STADIA[S.stadium || 0]}</span><span><b>Difficulty:</b> ${d.n}</span><span><b>Conditions:</b> ${WEATHERS[S.weather].n} | ${TODS[S.tod].t}</span></div>`;
       };
       // Team Management shows the pregame lineup overview; its button opens the real team management menu
       V.tm = () => {
@@ -9519,9 +9519,9 @@ vIndirectBack = vIndirectFront;
         const hc = (n, col) => `<div class="hc" style="border-color:${col}">${n || ""}</div>`;
         return `<section class="pre-grid">${ps(H, "home")}${ps(A, "away")}<div class="pm">${center}</div></section>
           ${mid || `<div class="h2h"><h4>Overall H2H</h4><div><div class="lb" style="color:#2fd9c0">Wins</div>${hc(wh, "#2fd9c0")}</div><div><div class="lb" style="color:#9eabbd">Draws</div>${hc(dr, "#9eabbd")}</div><div><div class="lb" style="color:#9be34a">Wins</div>${hc(wa, "#9be34a")}</div></div>`}
-          <div class="infobar"><span><b>Stadium:</b> Derby Day Arena</span><span><b>Length:</b> ${hlTxt(LENS[S.len])} Half</span><span><b>Difficulty:</b> ${d.n}</span><span><b>Conditions:</b> ${WEATHERS[S.weather].n} | ${TODS[S.tod].t}</span></div>`;
+          <div class="infobar"><span><b>Stadium:</b> ${STADIA[S.stadium || 0]}</span><span><b>Length:</b> ${hlTxt(LENS[S.len])} Half</span><span><b>Difficulty:</b> ${d.n}</span><span><b>Conditions:</b> ${WEATHERS[S.weather].n} | ${TODS[S.tod].t}</span></div>`;
       };
-      const STADIA = ["Derby Day Arena", "Brisbane Bowl"];
+      const STADIA = ["Derby Day Arena", "Suncorp Stadium"];
       const onOff = (v) => (v ? "On" : "Off"),
         rkIds = () => (ROCKET.mode === "set" ? ["rkm", "rkp"] : ["rkm", "rka", "rkb"]),
         SETTABS = [
@@ -9545,7 +9545,7 @@ vIndirectBack = vIndirectFront;
           grass: ["Grass Quality", GRASS_TIERS[GRASS_Q].n, "Detail of the 3D grass blades. Lower it if the game runs slowly."],
           grasscol: ["Grass Colour", GRASS_COL_NAMES[GRASS_COL], "Shade of the pitch grass. The higher the bar, the deeper the green.", "grasscol"],
           ball: ["Ball", BALLS[S.ball].n, "Ball design."],
-          stadium: ["Stadium", STADIA[S.stadium || 0], "Derby Day Arena, or the tight two-tier Brisbane Bowl with a cantilever roof."],
+          stadium: ["Stadium", STADIA[S.stadium || 0], "Derby Day Arena, or Suncorp Stadium: a tight two-tier rectangular bowl with a cantilever roof."],
           lock: ["Lock-On Player", lockOn ? "Lock" : "Auto", "Keep control of the chosen player, or auto-switch."],
           off: ["Offside", onOff(RULES.offside), "Players in an offside position are penalised."],
           foul: ["Fouls", onOff(RULES.fouls), "Tackles and challenges can be called as fouls."],
