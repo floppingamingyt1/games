@@ -1110,7 +1110,10 @@
     .h-center h2{margin:0;font-size:clamp(18px,3.4vh,28px);font-weight:800;letter-spacing:.2px;text-shadow:0 2px 14px #000b}
     .h-center p{margin:clamp(6px,1.4vh,12px) 0 0;font-size:clamp(11px,1.9vh,15px);font-weight:700;color:#e3e9f1;text-shadow:0 1px 10px #000b}
     .hbtn{margin-top:clamp(20px,6.4vh,52px);display:inline-flex;align-items:center;gap:12px;padding:clamp(8px,1.5vh,12px) clamp(18px,2.2vw,28px) clamp(8px,1.5vh,12px) clamp(10px,1.4vw,14px);border-radius:999px;border:2px solid transparent;background:linear-gradient(#1c2250,#171a3c) padding-box,linear-gradient(90deg,#46b4ff,#9b5cff) border-box;color:#fff;font-size:clamp(14px,2.3vh,18px);font-weight:800;box-shadow:0 0 22px rgba(110,100,255,.45);transition:transform .15s,box-shadow .15s}
-    .hbtn .h-x{display:grid;place-items:center;width:1.55em;height:1.55em;border-radius:50%;background:#fff;color:#3a54d8;font-style:normal;font-size:.9em;font-weight:900;line-height:1}
+    .hbtn .h-x{display:none}
+    body:not(.has-pad) .hbtn{padding-left:clamp(18px,2.2vw,28px)}
+    body.has-pad .hbtn .h-x{display:grid}
+    body.has-pad .hbtn .h-x{place-items:center;width:1.55em;height:1.55em;border-radius:50%;background:#fff;color:#3a54d8;font-style:normal;font-size:.9em;font-weight:900;line-height:1}
     .hbtn.nf,.hbtn:hover{transform:scale(1.04);box-shadow:0 0 32px rgba(125,110,255,.75)!important;outline:0!important}
     .hscr .h-item.nf{outline:0!important;box-shadow:none!important}
     .hscr .h-item{cursor:pointer;transition:transform .15s,text-shadow .15s}
@@ -3472,6 +3475,26 @@ vIndirectBack = vIndirectFront;
             T.root[0] += 0.12 * tw;
           }
         }
+        // First-time play: the action is queued and the ball is on its way. He gets set to meet it: weight on the standing
+        // leg, kicking foot cocked and ready on the side the ball is coming in on, arms out for balance, eyes on the ball
+        if (OT && OT.p === p && !p.kick && o !== p) {
+          const w = OT.w,
+            kf = OT.foot ? "R" : "L",
+            sf = OT.foot ? "L" : "R";
+          T["hip" + kf][0] += 0.3 * w;
+          T["knee" + kf][0] += 0.8 * w;
+          T["ankle" + kf][0] += 0.25 * w;
+          T["toe" + kf][0] += 0.1 * w;
+          T["hip" + sf][0] += -0.12 * w;
+          T["knee" + sf][0] += 0.3 * w;
+          T["ankle" + sf][0] += -0.1 * w;
+          T.spine[0] += 0.05 * w;
+          T.chest[1] += (OT.foot ? 1 : -1) * 0.12 * w;
+          T.armL[2] += 0.55 * w;
+          T.armR[2] -= 0.55 * w;
+          T["arm" + sf][0] += -0.3 * w;
+          T.head[0] += 0.2 * w;
+        }
         // Shot / pass wind-up while the button is held: kicking leg cocks back, body coils, arms out
         if (p === ctrl && chg.k && o === p && !ball.setp && !p.kick) {
           const cw = chg.t * (chg.k === "KeyF" ? 1 : 0.35) * (chg.mode === "power" ? 1.25 : 1),
@@ -3620,6 +3643,13 @@ vIndirectBack = vIndirectFront;
               T["arm" + kf][0] = mix(T["arm" + kf][0], kv(P.ak), wK);
               T.armL[2] = mix(T.armL[2], kv(P.ao), wK);
               T.armR[2] = mix(T.armR[2], -kv(P.ao), wK);
+              if (K.ot) {
+                // First-time kick: arms thrown wider for balance, eyes down on the ball, a touch more trunk twist
+                T.armL[2] += 0.3 * wK;
+                T.armR[2] -= 0.3 * wK;
+                T.head[0] += 0.15 * wK;
+                T.chest[1] += sgn * 0.1 * wK;
+              }
             }
           }
         }
@@ -4666,7 +4696,7 @@ vIndirectBack = vIndirectFront;
         if (g.gk && g.dive && !g.dive.rush) g.dive.rush = Math.max(1, (g.dive.dur - g.dive.t) / 0.5);
       }
       function takeBall(p) {
-        sfxTrap(p);
+        if (!OT_QUIET) sfxTrap(p);
         // A keeper gathering the ball cancels a replay that was waiting: replays only play when the ball goes out
         if (p.gk && RP.pend && RP.pend.kind !== "goal") RP.pend = null;
         if (ball.offs && p.team === ball.offT && ball.offs.has(p)) {
@@ -5096,6 +5126,101 @@ vIndirectBack = vIndirectFront;
         ball.thru = kind === "through";
         if (!ball.strike) applySw(); // no wind-up (e.g. a throw): the ball has already left
       }
+      // ---------------------------------------------------------------------------------
+      // First-time play (one touch). Press pass / through / lob / shoot while a team-mate's pass is still on its way and the
+      // action is queued. When the ball reaches him he does not control it: no trap, no turn. He plays it straight away with a
+      // short, snappy swing. Holding the button keeps charging until the ball arrives, and the stick aims at the moment of contact.
+      // (var, not let: the animation code reads OT and may run before this line has executed)
+      // ---------------------------------------------------------------------------------
+      var OT = null, OT_QUIET = false;
+      function otIncoming(p) {
+        if (!p || p.gk || p.dive || p.stun > 0 || p.injured || p.kick || p.tm) return false;
+        if (phase !== "play" || SO.on || RP.on || ball.owner || ball.setp || ball.hand || ball.strike || freeze > 0 || celeb > 0) return false;
+        if (ball.lastTeam !== p.team || ball.lastP === p || ball.dummy === p) return false;
+        const dx = p.pos.x - ball.p.x, dz = p.pos.z - ball.p.z, dist = Math.hypot(dx, dz);
+        if (dist > 30) return false;
+        if (ball.rcv === p) return true;
+        // A loose ball rolling towards him that he is the closest team-mate to
+        const sp = Math.hypot(ball.v.x, ball.v.z);
+        if (sp < 2.5 || (ball.v.x * dx + ball.v.z * dz) / (sp * (dist || 1)) < 0.6) return false;
+        for (const q of P) if (q !== p && q.team === p.team && !q.gk && Math.hypot(q.pos.x - ball.p.x, q.pos.z - ball.p.z) < dist) return false;
+        return true;
+      }
+      function otQueue(p, k) {
+        OT = { p, k, c: 0, mode: k === "KeyF" ? shotMode() : null, held: true, age: 0, tA: 9, w: 0.15, foot: p.foot ? 1 : 0 };
+      }
+      // Every frame: keep the queued action alive while the pass is still coming, charge it while the button is held
+      function otUpdate(dt) {
+        const o = OT, p = o.p;
+        o.age += dt;
+        if (phase !== "play" || SO.on || RP.on || ball.owner || ball.setp || ball.hand || ball.strike || freeze > 0 || celeb > 0 ||
+            o.age > 2.4 || ctrl !== p || p.kick || p.dive || p.stun > 0 || ball.lastTeam !== p.team || ball.lastP === p) {
+          OT = null;
+          return;
+        }
+        if (o.held) o.c = Math.min(1, o.c + dt / (o.mode === "power" ? 0.8 : CT));
+        const dx = p.pos.x - ball.p.x, dz = p.pos.z - ball.p.z, dist = Math.hypot(dx, dz) || 0.001,
+          closing = ((ball.v.x - p.vel.x) * dx + (ball.v.z - p.vel.z) * dz) / dist;
+        o.tA = closing > 0.5 ? dist / closing : 9; // seconds until the ball reaches him
+        o.w += (clamp((0.65 - o.tA) / 0.4, 0.15, 1) - o.w) * Math.min(1, 12 * dt); // how far into the "get set" pose he is
+        // The foot on the side the ball comes in on
+        const lat = (-(ball.p.x - p.pos.x) * p.d.z + (ball.p.z - p.pos.z) * p.d.x) / dist;
+        if (lat > 0.5) o.foot = 1;
+        else if (lat < -0.5) o.foot = 0;
+      }
+      // Called from ballStep once the ball has moved: start the kick so the boot meets the ball as it arrives
+      function otTrigger() {
+        const o = OT;
+        if (!o || ball.owner || ball.strike || ball.p.y > 1.3 || ball.dummy === o.p) return false;
+        const p = o.p, sp = Math.hypot(ball.v.x, ball.v.z);
+        if (sp >= 44 || (sp >= 20 && ball.rcv !== p)) return false;
+        // The boot meets the ball a stride in front of him; start the swing so contact lands exactly as the ball gets there
+        const fx = p.pos.x + p.d.x * 0.42, fz = p.pos.z + p.d.z * 0.42,
+          dx = fx - ball.p.x, dz = fz - ball.p.z, dist = Math.hypot(dx, dz) || 0.001,
+          closing = ((ball.v.x - p.vel.x) * dx + (ball.v.z - p.vel.z) * dz) / dist,
+          tA = closing > 0.5 ? dist / closing : 99;
+        if (dist < 0.9 || (tA <= otWindEst(o) + 0.02 && dist < 6)) return otFire(p);
+        return false;
+      }
+      // About how long this queued kick's swing takes to reach the ball (matches the shortened wind-up set in otFire)
+      function otWindEst(o) {
+        let w;
+        if (o.k === "KeyF") w = o.mode === "power" ? 0.46 : o.mode === "fin" ? 0.32 : !o.mode && o.c < 0.375 ? 0.09 : 0.3;
+        else if (o.k === "KeyK") w = 0.27;
+        else if (o.k === "KeyJ") w = 0.2;
+        else w = 0.19;
+        return Math.max(0.09, w * 0.55);
+      }
+      function otFire(p) {
+        const o = OT;
+        OT = null;
+        if (!o || o.p !== p || ctrl !== p) return false;
+        const bx = ball.p.x, by = ball.p.y, bz = ball.p.z;
+        OT_QUIET = true; // no trapping sound: he never controls it
+        takeBall(p); // counts the completed pass, checks offside
+        OT_QUIET = false;
+        if (ball.owner !== p) return true; // offside / restart: the move is over
+        p.trap = null;
+        p.tm = null; // no first-touch control and no turn
+        const d0x = p.d.x, d0z = p.d.z;
+        // The boot meets the ball a stride in front of him: aim the kick from there, not from wherever the ball is right now
+        ball.p.set(p.pos.x + d0x * 0.42, 0.3, p.pos.z + d0z * 0.42);
+        fire(o.k, Math.max(0.05, o.c), o.mode);
+        ball.p.set(bx, by, bz);
+        const K = p.kick;
+        if (K && !K.throw) {
+          K.ot = true;
+          K.foot = o.foot;
+          K.w = Math.max(0.09, K.w * 0.55); // a flick, not a full wind-up
+          K.f *= 0.9;
+          p.pcd = 0.5 + K.w;
+          // Body swings round to face the kick over a few frames instead of snapping
+          p.otFace = { d: p.d.clone(), t: 0 };
+          p.d.set(d0x, 0, d0z);
+          if (ball.strike) ball.strike.ot = true;
+        }
+        return true;
+      }
       // Finesse: shoot + 1 (or R1 + shoot). Power shot: shoot + 2 (or R1 + L1 + shoot)
       const shotMode = () =>
         keys.Digit2 || keys.Numpad2 || ((keys.Digit1 || keys.Numpad1) && keys.KeyE)
@@ -5142,6 +5267,15 @@ vIndirectBack = vIndirectFront;
           if(!taps.length)window.__eqZ=camZ;
           taps.push(now);window.__eqTaps=taps;
           if(taps.length>=3){window.__eqTaps=[];camZ=window.__eqZ;window.__spursBoost=!window.__spursBoost;say(window.__spursBoost?"NORTH LONDON ROCKETS: ON":"NORTH LONDON ROCKETS: OFF",2200);return;}
+        }
+        // First-time play: shoot / pass / lob / through pressed before the ball arrives queues the action for one touch
+        if (ctrl && OT && OT.p === ctrl && OT.k === "KeyF" && ["Digit1", "Digit2", "Numpad1", "Numpad2", "KeyE"].includes(e.code)) {
+          OT.mode = shotMode();
+          return;
+        }
+        if (LBL[e.code] && ctrl && ball.owner !== ctrl && act.slide <= 0 && otIncoming(ctrl)) {
+          otQueue(ctrl, e.code);
+          return;
         }
         const dc =
           ctrl && ball.owner !== ctrl
@@ -5218,6 +5352,7 @@ vIndirectBack = vIndirectFront;
       const gameKeyUp = (e) => {
         if (onlKeyIntercept(e, 0)) return;
         keys[e.code] = 0;
+        if (OT && OT.k === e.code) OT.held = false;
         if (chg.k === e.code) {
           const had = ctrl && ball.owner === ctrl;
           // A quick tap of shoot waits a moment: a second tap in that window makes it a driven shot
@@ -7201,6 +7336,7 @@ vIndirectBack = vIndirectFront;
       function ballStep(dt) {
         const b = ball;
         b.lock -= dt;
+        if (OT) otUpdate(dt);
         if (b.strike && b.owner) b.strike = null;
         if (b.pendSw && !b.strike) b.pendSw = null; // the pass never left (tackled, etc.): no switch
         if (b.strike) {
@@ -7212,7 +7348,13 @@ vIndirectBack = vIndirectFront;
           }
           if (kk && !kk.throw && kk.t < kk.w && S.age < 1.5) {
             // Wind-up: the ball waits in front of the kicker until the boot connects
-            if (S.follow) {
+            if (S.ot) {
+              // First-time kick: the ball is not held, it keeps travelling and reaches the boot exactly at contact
+              const rem = Math.max(dt, kk.w - kk.t), f = Math.min(1, dt / rem);
+              b.p.x += (kp.pos.x + kp.d.x * 0.42 - b.p.x) * f;
+              b.p.z += (kp.pos.z + kp.d.z * 0.42 - b.p.z) * f;
+              b.p.y += (0.3 - b.p.y) * f;
+            } else if (S.follow) {
               _v.set(kp.pos.x + kp.d.x * 0.42, 0.3, kp.pos.z + kp.d.z * 0.42);
               b.p.lerp(_v, Math.min(1, 22 * dt));
             }
@@ -7354,6 +7496,7 @@ vIndirectBack = vIndirectFront;
           return;
         }
         if (b.dummy && Math.hypot(b.p.x - b.dummy.pos.x, b.p.z - b.dummy.pos.z) > 3) b.dummy = null;
+        if (OT && otTrigger()) return;
         if (tryHeader()) return;
         if (b.lock <= 0 && b.p.y < 1.85) {
           // Solid low-ball body collision; preserve a slim channel between the player's legs.
@@ -7431,6 +7574,7 @@ vIndirectBack = vIndirectFront;
               }
             }
             if (bp) {
+              if (OT && OT.p === bp && otFire(bp)) return;
               takeBall(bp);
               return;
             }
@@ -7819,6 +7963,13 @@ vIndirectBack = vIndirectFront;
           if (p.tm) {
             const tm = p.tm, u = clamp(tm.t / tm.dur, 0, 1), h = tm.h0 + tm.rot * (u * u * (3 - 2 * u));
             p.d.set(Math.sin(h), 0, Math.cos(h));
+          }
+          if (p.otFace) {
+            // First-time kick: turn the body into the kick quickly but not instantly
+            const f = p.otFace;
+            f.t += dt;
+            p.d.lerp(f.d, Math.min(1, 20 * dt)).normalize();
+            if (f.t > 0.3 || !p.kick) p.otFace = null;
           }
           if (_sx) seatX();
         }
@@ -10749,6 +10900,13 @@ vIndirectBack = vIndirectFront;
       addEventListener("gamepadconnected", () => {
         if (phase !== "play" && scr === "ctrl") render();
       });
+      // The ✕ prompt on the home button only shows while a controller is connected
+      const syncPadClass = () =>
+        document.body.classList.toggle("has-pad", [...(navigator.getGamepads ? navigator.getGamepads() : [])].some((g) => g && g.connected));
+      addEventListener("gamepadconnected", syncPadClass);
+      addEventListener("gamepaddisconnected", syncPadClass);
+      setInterval(syncPadClass, 1000);
+      syncPadClass();
       // ======================================================================================================
       // ONLINE 1v1  (peer-to-peer over WebRTC with PeerJS; no server of our own, so it works from GitHub Pages)
       //   party owner = host : runs the whole match, drives team 0 itself and team 1 through the guest's inputs
