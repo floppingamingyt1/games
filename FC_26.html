@@ -1118,6 +1118,26 @@
     .hscr .h-item.nf{outline:0!important;box-shadow:none!important}
     .hscr .h-item{cursor:pointer;transition:transform .15s,text-shadow .15s}
     .hscr .h-item.nf,.hscr .h-item:hover{transform:translateX(6px);text-shadow:0 0 18px rgba(125,110,255,.95),0 2px 12px #000a}
+    /* 1v1 hero: replaces the Kick Off panel while 1v1 is hovered / selected in the side menu */
+    .hscr .h-v1{display:none}
+    .hscr.is1v1 .h-v1{display:flex}
+    .hscr.is1v1 .h-main{display:none}
+    .h-v1::before{content:"";position:absolute;inset:-14% -22%;z-index:-1;pointer-events:none;background:radial-gradient(38% 46% at 24% 52%,rgba(70,180,255,.30),transparent 70%),radial-gradient(38% 46% at 76% 52%,rgba(255,110,60,.28),transparent 70%)}
+    .v1-logo{display:flex;align-items:center;justify-content:center;gap:clamp(6px,1.2vh,12px);font-size:clamp(58px,11.8vh,110px);font-weight:1000;font-style:italic;line-height:1;letter-spacing:-.06em;transform:skewX(-8deg);margin-bottom:clamp(14px,4.4vh,36px);filter:drop-shadow(0 4px 22px #0009)}
+    .v1-logo b{font-weight:1000;padding-right:.06em;background-clip:text;-webkit-background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+    .v1-logo b.l{background-image:linear-gradient(180deg,#fff 25%,#8fd2ff)}
+    .v1-logo b.r{background-image:linear-gradient(180deg,#fff 25%,#ffb08a)}
+    .v1-logo i{font-style:italic;font-size:.4em;font-weight:1000;letter-spacing:.02em;padding:.18em .5em .18em .38em;border-radius:999px;color:#fff;background:linear-gradient(100deg,#2f9bff,#8b5cff 52%,#ff6a3d);box-shadow:0 0 26px rgba(139,92,255,.6);-webkit-text-fill-color:#fff}
+    .v1-duel{display:flex;align-items:center;justify-content:center;gap:clamp(10px,1.8vw,18px);margin-top:clamp(14px,3vh,26px)}
+    .v1-pl{min-width:clamp(120px,15vw,170px);padding:clamp(6px,1.1vh,9px) clamp(14px,1.6vw,20px);border-radius:14px;text-align:left;background:rgba(9,13,26,.62);border:1px solid rgba(70,180,255,.55);box-shadow:0 0 18px rgba(70,180,255,.25),inset 0 0 14px rgba(70,180,255,.08);backdrop-filter:blur(6px)}
+    .v1-pl.r{text-align:right;border-color:rgba(255,120,70,.6);box-shadow:0 0 18px rgba(255,110,60,.25),inset 0 0 14px rgba(255,110,60,.08)}
+    .v1-pl small{display:block;font-size:clamp(9px,1.3vh,11px);font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#8fd2ff}
+    .v1-pl.r small{color:#ffb08a}
+    .v1-pl b{display:block;margin-top:2px;font-size:clamp(13px,2vh,16px);font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:clamp(110px,14vw,160px)}
+    .v1-pl.r b{margin-left:auto}
+    .v1-vs{width:clamp(34px,5vh,44px);height:clamp(34px,5vh,44px);display:grid;place-items:center;border-radius:50%;font-size:clamp(12px,1.9vh,15px);font-weight:1000;font-style:italic;letter-spacing:.02em;color:#fff;background:linear-gradient(135deg,#2f9bff,#8b5cff 50%,#ff6a3d);box-shadow:0 0 20px rgba(139,92,255,.6)}
+    .hbtn.v1btn{background:linear-gradient(#1c2250,#171a3c) padding-box,linear-gradient(90deg,#46b4ff,#8b5cff 50%,#ff6a3d) border-box;box-shadow:0 0 22px rgba(139,92,255,.45)}
+    .hbtn.v1btn.nf,.hbtn.v1btn:hover{box-shadow:0 0 32px rgba(160,100,255,.8)!important}
     #ld{position:fixed;inset:0;z-index:99500;display:none;opacity:0;background:#02010a;overflow:hidden;pointer-events:auto;cursor:none;transition:opacity .16s ease}
     #ld.on{display:block}#ld.vis{opacity:1}
     #ld:not(.vis){transition-duration:.75s;transition-timing-function:ease-out}
@@ -9546,11 +9566,18 @@ vIndirectBack = vIndirectFront;
         <div class="h-logo">FC26</div>
         <div class="h-user">${esc(HOME_NAME)}</div>
         <nav class="h-side"><div class="h-item" data-f data-id="homeside" data-go="teams">Kick Off</div><div class="h-item" data-f data-id="home1v1" data-go="online">1v1</div></nav>
-        <div class="h-center">
+        <div class="h-center h-main">
           <div class="ko-logo h-ko">K<span>O</span></div>
           <h2>Dive straight into the action</h2>
           <p>Quick matches · Couch Co-op · Customise settings</p>
           <div class="hbtn" data-f data-id="homeko" data-go="teams"><i class="h-x">✕</i><span>Enter Kick Off</span></div>
+        </div>
+        <div class="h-center h-v1">
+          <div class="v1-logo"><b class="l">1</b><i>V</i><b class="r">1</b></div>
+          <h2>Challenge a friend online</h2>
+          <p>Create a party · Share the code · Play live</p>
+          <div class="v1-duel"><div class="v1-pl"><small>Host</small><b>${esc(HOME_NAME)}</b></div><div class="v1-vs">VS</div><div class="v1-pl r"><small>Guest</small><b>Your friend</b></div></div>
+          <div class="hbtn v1btn" data-f data-id="home1v1go" data-go="online"><i class="h-x">✕</i><span>Enter 1v1</span></div>
         </div>
       </section>`;
       // Home background: one <img>. Fade in, hold for HOME_BG_MS, fade to black, short pause, next photo.
@@ -9901,10 +9928,18 @@ vIndirectBack = vIndirectFront;
         document.querySelectorAll(".nf").forEach((n) => n.classList.remove("nf"));
         if (!el) return;
         el.classList.add("nf");
+        if (scr === "home") homeHeroSync(el);
         if (!quiet) sfxMenu("move");
         if (el.dataset.id) focusId = el.dataset.id;
         if (!quiet) el.scrollIntoView({ block: "nearest", inline: "nearest" });
         updSetPanel();
+      }
+      // Home screen: the centre panel follows the side menu. 1v1 (or its own button) shows the 1v1 panel, Kick Off shows the KO panel.
+      function homeHeroSync(el) {
+        const h = main.querySelector(".hscr"), id = el && el.dataset ? el.dataset.id : "";
+        if (!h) return;
+        if (id === "home1v1" || id === "home1v1go") h.classList.add("is1v1");
+        else if (id === "homeko" || id === "homeside") h.classList.remove("is1v1");
       }
       function updSetPanel() {
         if (pauseOpen && (pausePage === "game" || pausePage === "ctrlset")) {
@@ -9960,23 +9995,27 @@ vIndirectBack = vIndirectFront;
       // ---- loading screen (about 1 second, FC logo with a green line circling it at a varying speed) ----
       const LD = { on: false, raf: 0 };
       miscImg(document.querySelector("#ld .lg img"), "FC_logo");
-      function loadScreen(fn, dur) {
+      // hold (optional): a promise. While it is pending the loading screen stays up and keeps spinning; when it resolves
+      // fn runs (unless it resolved to false, then the screen just ends without running fn).
+      // after (optional, with hold): fn still runs after 0.26s as normal, and only the end of the screen waits for hold.
+      function loadScreen(fn, dur, hold, after) {
         if (LD.on) return;
         LD.on = true;
         LDCOVER = true;
         const el = $("ld"), g = el.querySelector(".gr"), T = dur || 1000, t0 = performance.now();
-        let fired = false;
+        let fired = false, held = !!hold, failed = false;
+        if (hold) hold.then((r) => { held = false; if (r === false) { failed = true; fired = true; } }, () => { held = false; failed = true; fired = true; });
         el.classList.add("on");
         const bv = el.querySelector(".bgv"); if (bv && bv.src) { try { bv.currentTime = 0; bv.play().catch(() => {}); } catch (e) {} }
         void el.offsetWidth;
         el.classList.add("vis");
         const tick = (now) => {
-          const t = Math.min(1, (now - t0) / T);
+          const u = (now - t0) / T, t = Math.min(1, u), pu = held ? u : t;
           // speed oscillates between slow and fast (always positive): position = t + a*sin(2*pi*k*t)/(2*pi*k)
-          const k = 2.5, pos = 2.2 * (t + (0.85 * Math.sin(2 * Math.PI * k * t)) / (2 * Math.PI * k));
+          const k = 2.5, pos = 2.2 * (pu + (0.85 * Math.sin(2 * Math.PI * k * pu)) / (2 * Math.PI * k));
           g.style.strokeDashoffset = String(-pos * 100);
-          if (!fired && now - t0 > 260) { fired = true; try { fn && fn(); } catch (e) { console.error(e); } }
-          if (t < 1) LD.raf = requestAnimationFrame(tick);
+          if (!fired && (after || !held) && now - t0 > 260) { fired = true; try { fn && fn(); } catch (e) { console.error(e); } }
+          if (held || (t < 1 && !failed) || !fired) LD.raf = requestAnimationFrame(tick);
           else {
             el.classList.remove("vis");
             LDCOVER = false; // the screen starts to fade: all match sound starts now
@@ -10676,7 +10715,7 @@ vIndirectBack = vIndirectFront;
           if (a === "accept" && hcur && hcur.dataset.id === "homeset") return activate(hcur);
           if (a === "accept") {
             sfxMenu("select");
-            if (hcur && hcur.dataset.id === "home1v1") nav(() => show("online"));
+            if (hcur && (hcur.dataset.id === "home1v1" || hcur.dataset.id === "home1v1go")) nav(() => show("online"));
             else nav(() => show("teams"));
           }
           return;
@@ -10923,6 +10962,36 @@ vIndirectBack = vIndirectFront;
       const lid = (id) => (1 - ((id / 11) | 0)) * 11 + (id % 11); // host player id -> the same player's id in the guest's mirrored world
       const pid = (p) => p.team * 11 + p.idx;
       function onlSend(m) { try { if (ONLN.conn && ONLN.conn.open) ONLN.conn.send(m); } catch (e) {} }
+      // ---- fast lane ----
+      // The normal PeerJS channel is reliable AND ordered: one lost packet freezes everything behind it until it is re-sent.
+      // For things that go stale in 33ms anyway (the host's snapshots, the guest's stick input) that is the wrong trade, so they
+      // travel on a second channel that is unordered and never re-sends. Anything that must arrive (start, go, goals, key presses,
+      // sounds and messages) stays on the normal channel. If the fast lane cannot be opened, everything just uses the normal one.
+      function onlOpenFast(conn) {
+        try {
+          const pc = conn && conn.peerConnection;
+          if (!pc) return;
+          if (ONLN.fast) { if (ONLN.fast.__pc === pc) return; try { ONLN.fast.close(); } catch (e) {} ONLN.fast = null; } // a new guest: drop the old lane
+          const dc = pc.createDataChannel("fast", { negotiated: true, id: 10, ordered: false, maxRetransmits: 0 });
+          dc.__pc = pc;
+          dc.onmessage = (e) => {
+            let m; try { m = JSON.parse(e.data); } catch (x) { return; }
+            if (!m || typeof m !== "object") return;
+            if (ONL.role === "guest") { ONLN.lastRx = performance.now(); onlGuestData(m); }
+            else if (ONLN.conn) onlHostData(ONLN.conn, m);
+          };
+          dc.onclose = () => { if (ONLN.fast === dc) ONLN.fast = null; };
+          ONLN.fast = dc;
+        } catch (e) { ONLN.fast = null; }
+      }
+      function onlSendFast(m) {
+        const dc = ONLN.fast;
+        if (dc && dc.readyState === "open") {
+          if (dc.bufferedAmount < 40000) { try { dc.send(JSON.stringify(m)); } catch (e) {} } // backed up: drop it, the next one is newer anyway
+          return;
+        }
+        onlSend(m); // fast lane not up (yet / not supported): ordinary channel
+      }
       function onlMsg(t, ok) { const e = $("onl-msg"); if (e) { e.textContent = t || ""; e.className = "onl-msg" + (ok ? " ok" : ""); } }
       function onlLoadPeer() {
         if (window.Peer) return Promise.resolve();
@@ -10977,6 +11046,11 @@ vIndirectBack = vIndirectFront;
         clearInterval(ONLN.inT);
         try { if (ONLN.conn) ONLN.conn.close(); } catch (e) {}
         try { if (ONLN.peer) ONLN.peer.destroy(); } catch (e) {}
+        clearTimeout(ONLN.waitT);
+        ONLN.wait = false;
+        if (ONLN.release) { ONLN.release(false); ONLN.release = null; }
+        try { if (ONLN.fast) ONLN.fast.close(); } catch (e) {}
+        ONLN.fast = null; ONLN.iseq = 0; ONLN.iIn = 0; ONLN.snapIn = 0;
         Object.assign(ONLN, { peer: null, conn: null, code: "", hname: "", gname: "", snaps: [], evq: [], inMatch: false, pmap: null, busy: false });
         ONL.on = false; ONL.role = ""; ONL.seat1 = false; ONL.rk = false; ONL.ready = false;
         if (SEAT_I === 1) seatX();
@@ -11019,6 +11093,9 @@ vIndirectBack = vIndirectFront;
         else { onlBroadcastLobby(); toast("Opponent left the party", 2500); }
       }
       function onlAbortMatch(msg) {
+        clearTimeout(ONLN.waitT);
+        ONLN.wait = false;
+        if (ONLN.release) { ONLN.release(false); ONLN.release = null; }
         ONL.on = false; ONL.seat1 = false; ONL.rk = false; ONLN.inMatch = false;
         if (SEAT_I === 1) seatX();
         const pz = $("onl-pz"); if (pz) pz.style.display = "none";
@@ -11033,7 +11110,18 @@ vIndirectBack = vIndirectFront;
         show("lobby");
         if (msg) toast(msg, 3200);
       }
+      // Create Party: pressed from the 1v1 menu, the loading screen comes up straight away and stays until the party exists,
+      // then the lobby opens underneath it. If it fails the screen ends and the error shows on the 1v1 menu.
       async function onlCreate() {
+        if (ONLN.busy) return;
+        if (pauseOpen || phase === "play" || ko.style.display === "none" || LD.on) return onlCreateRun(false);
+        let release;
+        const hold = new Promise((r) => (release = r));
+        loadScreen(() => show("lobby"), 1000, hold);
+        let ok = false;
+        try { ok = (await onlCreateRun(true)) === true; } catch (e) { console.error(e); } finally { release(ok); }
+      }
+      async function onlCreateRun(covered) {
         if (ONLN.busy) return;
         ONLN.busy = true;
         onlMsg("Creating party…");
@@ -11060,6 +11148,7 @@ vIndirectBack = vIndirectFront;
             ONLN.busy = false;
             onlHeartbeat();
             ko.style.display = "flex";
+            if (covered) return true; // the loading screen opens the lobby
             return nav(() => show("lobby"));
           }
           if (r.err !== "unavailable-id") { ONLN.busy = false; onlRestoreLocal(); return onlMsg(r.err === "timeout" ? "Could not reach the matchmaking service. Try again." : "Could not create the party (" + r.err + ")"); }
@@ -11077,6 +11166,8 @@ vIndirectBack = vIndirectFront;
         if (m.t === "hello") {
           if (ONLN.conn && ONLN.conn.open && ONLN.conn !== conn) { try { conn.send({ t: "full" }); } catch (e) {} setTimeout(() => { try { conn.close(); } catch (e) {} }, 400); return; }
           ONLN.conn = conn;
+          ONLN.iIn = 0;
+          onlOpenFast(conn);
           ONLN.lastRx = performance.now();
           ONLN.gname = onlClean(m.name) || "Guest";
           if (ONLN.gname.toLowerCase() === ONLN.hname.toLowerCase()) ONLN.gname += "2";
@@ -11089,7 +11180,8 @@ vIndirectBack = vIndirectFront;
         if (m.t === "ping") onlSend({ t: "pong" });
         else if (m.t === "team") { if (Number.isInteger(m.i) && m.i >= 0 && m.i < TEAMS.length && m.i !== S.h && !ONL.on) { S.a = m.i; onlBroadcastLobby(); } }
         else if (m.t === "bye") onlPeerGone();
-        else if (m.t === "i") { ONL.mv1 = [+m.x || 0, +m.z || 0]; SEAT1.keys.ShiftLeft = m.sh ? 1 : 0; SEAT1.lockOn = !!m.lk; }
+        else if (m.t === "ready") { ONLN.guestReady = true; onlMaybeGo(); }
+        else if (m.t === "i") { if (m.n !== undefined) { if (m.n <= (ONLN.iIn || 0)) return; ONLN.iIn = m.n; } ONL.mv1 = [+m.x || 0, +m.z || 0]; SEAT1.keys.ShiftLeft = m.sh ? 1 : 0; SEAT1.lockOn = !!m.lk; }
         else if (m.t === "k") onlHostKey(m.c, m.d);
         else if (m.t === "kr") { if (SEAT_I === 0) for (const k in SEAT1.keys) SEAT1.keys[k] = 0; }
       }
@@ -11119,7 +11211,7 @@ vIndirectBack = vIndirectFront;
             if (m.t === "full") { clearTimeout(to); return fail("That party is full."); }
             if (m.t === "welcome" && !welcomed) {
               welcomed = true; clearTimeout(to);
-              ONLN.busy = false; ONLN.code = code; ONLN.myName = name; ONL.role = "guest";
+              ONLN.busy = false; ONLN.code = code; ONLN.myName = name; ONL.role = "guest"; ONLN.iseq = 0; ONLN.snapIn = 0; onlOpenFast(conn);
               onlHeartbeat();
               onlGuestLobby(m.st);
               ko.style.display = "flex";
@@ -11144,7 +11236,12 @@ vIndirectBack = vIndirectFront;
         else if (m.t === "kick") onlLeave("You were kicked from the party");
         else if (m.t === "bye") onlLeave(ONL.on ? "The host ended the match" : "The host closed the party");
         else if (m.t === "start") onlGuestStart(m.st);
-        else if (m.t === "snap") { m.at = performance.now(); ONLN.snaps.push(m); if (ONLN.snaps.length > 12) ONLN.snaps.shift(); }
+        else if (m.t === "go") onlGuestRelease(true);
+        else if (m.t === "snap") {
+          if (m.n <= (ONLN.snapIn || 0)) { if (m.ev) for (const ev of m.ev) onlEvent(ev); return; } // arrived after a newer one: its picture is old news, its sounds still count
+          ONLN.snapIn = m.n;
+          m.at = performance.now(); ONLN.snaps.push(m); if (ONLN.snaps.length > 12) ONLN.snaps.shift();
+        }
         else if (m.t === "end") onlGuestEnd(m.res);
       }
       function onlTeamAdj(d) {
@@ -11167,6 +11264,7 @@ vIndirectBack = vIndirectFront;
       function onlStart() {
         if (ONL.role !== "host") return;
         if (!ONLN.conn || !ONLN.conn.open) return toast("Waiting for an opponent to join", 2000);
+        if (LD.on) return;
         RULES.shootout = false; RULES.replays = false; window.__spursBoost = false;
         S.user = "home"; S.koSide = "home"; S.adv = 0;
         ensureTeams();
@@ -11174,14 +11272,42 @@ vIndirectBack = vIndirectFront;
         ONLN.inMatch = true; ONLN.snapAcc = 0; ONLN.seq = 0; ONLN.evq = [];
         resetSeat1();
         ONL.on = true; ONL.role = "host"; ONL.seat1 = true;
-        loadScreen(() => start());
+        // The match is set up behind the loading screen, but kickoff is held (the sim stays frozen and the screen stays up)
+        // until BOTH players have finished loading: this side, and the guest's "ready" message.
+        ONLN.wait = true; ONLN.hostReady = false; ONLN.guestReady = false;
+        const hold = new Promise((r) => (ONLN.release = r));
+        clearTimeout(ONLN.waitT);
+        ONLN.waitT = setTimeout(() => onlGo(true), 45000); // safety: never hang forever if a ready message goes missing
+        loadScreen(() => { start(); onlAfterFrames(2, () => { ONLN.hostReady = true; onlMaybeGo(); }); }, 1000, hold, true);
+      }
+      function onlAfterFrames(n, cb) { // after the first frames have actually been drawn (shaders compiled, textures uploaded)
+        const f = () => { if (--n <= 0) cb(); else requestAnimationFrame(f); };
+        requestAnimationFrame(f);
+      }
+      function onlMaybeGo() { if (ONLN.wait && ONLN.hostReady && ONLN.guestReady) onlGo(true); }
+      function onlGo(ok) { // host: release kickoff on both sides (ok=false: the match was cancelled)
+        clearTimeout(ONLN.waitT);
+        if (!ONLN.wait) return;
+        ONLN.wait = false;
+        if (ok) onlSend({ t: "go" });
+        if (ONLN.release) { ONLN.release(ok); ONLN.release = null; }
+        if (ok) LDAFTER.push(() => { if (phase === "play") say("KICK OFF", 1200); });
+      }
+      function onlGuestRelease(ok) { // guest: the host says go
+        clearTimeout(ONLN.waitT);
+        if (ONLN.release) { ONLN.release(ok); ONLN.release = null; if (ok) LDAFTER.push(() => { if (phase === "play") say("KICK OFF", 1200); }); }
       }
       function onlGuestStart(st) {
         onlGuestLobby(st);
         RULES.shootout = false; RULES.replays = false; window.__spursBoost = false;
         ONL.on = true; ONL.role = "guest"; ONL.seat1 = false; ONL.ready = false;
-        ONLN.snaps = []; ONLN.inMatch = true;
-        loadScreen(clientStart);
+        ONLN.snaps = []; ONLN.inMatch = true; ONLN.snapIn = 0;
+        if (LD.on) { clientStart(); return onlSend({ t: "ready" }); } // a loading screen is already up: nothing to hold
+        // Load behind the loading screen, tell the host we are ready, and stay there until the host says go
+        const hold = new Promise((r) => (ONLN.release = r));
+        clearTimeout(ONLN.waitT);
+        ONLN.waitT = setTimeout(() => onlGuestRelease(true), 50000); // safety net
+        loadScreen(() => { clientStart(); onlAfterFrames(2, () => onlSend({ t: "ready" })); }, 1000, hold, true);
       }
       function clientStart() {
         rpAbort();
@@ -11249,7 +11375,9 @@ vIndirectBack = vIndirectFront;
         if (ONLN.snapAcc < 1 / 30) return;
         ONLN.snapAcc = 0;
         try { if (ONLN.conn.dataChannel && ONLN.conn.dataChannel.bufferedAmount > 200000) return; } catch (e) {}
-        onlSend(onlSnap());
+        const s = onlSnap();
+        if (s.ev) onlSend(s); // carries sounds / messages that must not be lost
+        else onlSendFast(s);
       }
       function onlHostKey(c, d) {
         if (!ONL.on || ONL.role !== "host" || phase !== "play" || SEAT_I !== 0) return;
@@ -11279,7 +11407,7 @@ vIndirectBack = vIndirectFront;
       function onlGuestSendInput() {
         if (!ONL.on || ONL.role !== "guest" || phase !== "play") return;
         const [ix, iz] = inp();
-        onlSend({ t: "i", x: r2(-ix), z: r2(-iz), sh: sprint() ? 1 : 0, lk: lockOn ? 1 : 0 });
+        onlSendFast({ t: "i", n: (ONLN.iseq = (ONLN.iseq || 0) + 1), x: r2(-ix), z: r2(-iz), sh: sprint() ? 1 : 0, lk: lockOn ? 1 : 0 });
       }
       function onlKeyIntercept(e, down) {
         const t = e.target;
@@ -11503,7 +11631,7 @@ vIndirectBack = vIndirectFront;
         onlFocusIn: (id) => { const e = $(id); if (e) { e.focus(); try { e.setSelectionRange(e.value.length, e.value.length); } catch (x) {} } },
         onlStart: () => onlStart(),
         onlKick: () => { if (!ONLN.conn) return; onlSend({ t: "kick" }); const c = ONLN.conn; ONLN.conn = null; const g = ONLN.gname; ONLN.gname = ""; setTimeout(() => { try { c.close(); } catch (e) {} }, 300); clearInterval(ONLN.inT); if (ONL.on) onlAbortMatch(g + " was kicked"); else { onlBroadcastLobby(); toast(g + " was kicked", 2200); } },
-        onlLeaveParty: () => onlLeave(""),
+        onlLeaveParty: () => nav(() => onlLeave("")),
         onlToLobby: () => nav(() => show("lobby")),
         onlCopy: () => { try { navigator.clipboard.writeText(ONLN.code); toast("Party code copied", 1400); } catch (e) { toast("Code: " + ONLN.code, 2500); } },
       });
@@ -11513,7 +11641,7 @@ vIndirectBack = vIndirectFront;
           if (scr === "online") return nav(() => show("home"));
           if (scr === "onjoin") return nav(() => show("online"));
           if (scr === "onlres") return nav(() => show("lobby"));
-          return onlLeave("");
+          return nav(() => onlLeave(""));
         }
         if (a === "left" || a === "right") { if (cur && cur.dataset.adj) return adj(cur.dataset.adj, a === "left" ? -1 : 1); return navDir(a); }
         if (DIRS.includes(a)) return navDir(a);
@@ -12243,6 +12371,7 @@ vIndirectBack = vIndirectFront;
         if (phase === "play" && !isHeld() && !MUS.open) {
           if (RP.on) rpAdvance(dt);
           else if (ONL.on && ONL.role === "guest") clientStep(dt);
+          else if (ONL.on && ONLN.wait) { /* host: kickoff held until both players are loaded */ }
           else step(dt);
         }
         try { sfxFrame(dt); } catch (e) {}
